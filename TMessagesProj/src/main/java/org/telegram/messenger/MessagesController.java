@@ -9313,6 +9313,19 @@ public class MessagesController extends BaseController implements NotificationCe
         }
     }
 
+    public boolean shouldKeepDeleted(long dialogId) {
+        if (DialogObject.isEncryptedDialog(dialogId)) {
+            return org.telegram.messenger.SharedConfig.keepDeleted;
+        }
+        if (dialogId > 0) {
+            TLRPC.User user = getUser(dialogId);
+            if (user != null && user.bot) {
+                return org.telegram.messenger.SharedConfig.keepDeleted && org.telegram.messenger.SharedConfig.keepDeletedInBots;
+            }
+        }
+        return org.telegram.messenger.SharedConfig.keepDeleted;
+    }
+
     public void deleteMessages(ArrayList<Integer> messages, ArrayList<Long> randoms, TLRPC.EncryptedChat encryptedChat, long dialogId, int topicId, boolean forAll, int mode) {
         deleteMessages(messages, randoms, encryptedChat, dialogId, forAll, mode, false, 0, null, topicId);
     }
@@ -9357,21 +9370,25 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, false, ChatActivity.MODE_QUICK_REPLIES, topicId);
             } else {
-                if (channelId == 0) {
-                    for (int a = 0; a < messages.size(); a++) {
-                        Integer id = messages.get(a);
-                        MessageObject obj = dialogMessagesByIds.get(id);
-                        if (obj != null) {
-                            obj.deleted = true;
+                if (!shouldKeepDeleted(dialogId)) {
+                    if (channelId == 0) {
+                        for (int a = 0; a < messages.size(); a++) {
+                            Integer id = messages.get(a);
+                            MessageObject obj = dialogMessagesByIds.get(id);
+                            if (obj != null) {
+                                obj.deleted = true;
+                            }
                         }
+                    } else {
+                        markDialogMessageAsDeleted(dialogId, messages);
                     }
-                } else {
-                    markDialogMessageAsDeleted(dialogId, messages);
+                    getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, forAll, 0, topicId);
+                    getMessagesStorage().updateDialogsWithDeletedMessages(dialogId, channelId, messages, null);
                 }
-                getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, forAll, 0, topicId);
-                getMessagesStorage().updateDialogsWithDeletedMessages(dialogId, channelId, messages, null);
             }
-            getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, messages, channelId, scheduled, false, movedToScheduled, movedToScheduledMessageId);
+            if (!shouldKeepDeleted(dialogId) || scheduled || quickReplies) {
+                getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, messages, channelId, scheduled, false, movedToScheduled, movedToScheduledMessageId);
+            }
         } else {
             if (taskRequest instanceof TLRPC.TL_channels_deleteMessages) {
                 channelId = ((TLRPC.TL_channels_deleteMessages) taskRequest).channel.channel_id;
@@ -9977,6 +9994,21 @@ public class MessagesController extends BaseController implements NotificationCe
             getGlobalMainSettings().edit().putLong("proxy_dialog", promoDialogId).remove("proxyDialogAddress").putInt("nextPromoInfoCheckTime", nextPromoInfoCheckTime).commit();
         });
         removePromoDialog();
+    }
+
+    public void archiveDialogInsteadOfDelete(long dialogId) {
+        TLRPC.Dialog dialog = dialogs_dict.get(dialogId);
+        if (dialog != null) {
+            dialog.folder_id = 1;
+            dialog.pinned = false;
+            dialog.pinnedNum = 0;
+            hasArchivedChats = true;
+            boolean[] folderCreated = new boolean[1];
+            ensureFolderDialogExists(1, folderCreated);
+            getMessagesStorage().setDialogsFolderId(null, null, dialogId, 1);
+            sortDialogs(null);
+            getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
+        }
     }
 
     public void deleteDialog(final long did, int onlyHistory) {
@@ -11368,6 +11400,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean sendTyping(long dialogId, long threadMsgId, int action, String emojicon, int classGuid) {
+        if (org.telegram.messenger.SharedConfig.ghostMode) {
+            return false;
+        }
         if (action < 0 || action >= sendingTypings.length || dialogId == 0) {
             return false;
         }
@@ -14614,6 +14649,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount) {
+        if (org.telegram.messenger.SharedConfig.ghostMode) {
+            return;
+        }
         boolean createReadTask;
 
         if (threadId != 0) {
@@ -17537,6 +17575,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     protected void deleteMessagesByPush(long dialogId, ArrayList<Integer> ids, long channelId) {
+        if (shouldKeepDeleted(dialogId)) {
+            return;
+        }
         getMessagesStorage().getStorageQueue().postRunnable(() -> {
             AndroidUtilities.runOnUIThread(() -> {
                 getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, ids, channelId, false);
@@ -20145,7 +20186,11 @@ public class MessagesController extends BaseController implements NotificationCe
                             if (dialog == null && chat instanceof TLRPC.TL_channel && !chat.left) {
                                 Utilities.stageQueue.postRunnable(() -> getChannelDifference(update.channel_id, 1, 0, null));
                             } else if (ChatObject.isNotInChat(chat) && dialog != null && (promoDialog == null || promoDialog.id != dialog.id)) {
-                                deleteDialog(dialog.id, 0);
+                                if (org.telegram.messenger.SharedConfig.keepDeleted) {
+                                    archiveDialogInsteadOfDelete(dialog.id);
+                                } else {
+                                    deleteDialog(dialog.id, 0);
+                                }
                             }
                             if (chat instanceof TLRPC.TL_channelForbidden || chat.kicked) {
                                 ChatObject.Call call = getGroupCall(chat.id, false);
@@ -20184,7 +20229,11 @@ public class MessagesController extends BaseController implements NotificationCe
                             }
                             TLRPC.Dialog dialog = dialogs_dict.get(-chat.id);
                             if (dialog != null) {
-                                deleteDialog(dialog.id, 0);
+                                if (org.telegram.messenger.SharedConfig.keepDeleted) {
+                                    archiveDialogInsteadOfDelete(dialog.id);
+                                } else {
+                                    deleteDialog(dialog.id, 0);
+                                }
                             }
                         }
                         updateMask |= UPDATE_MASK_CHAT;
@@ -20999,6 +21048,9 @@ public class MessagesController extends BaseController implements NotificationCe
             if (deletedMessagesFinal != null) {
                 for (int a = 0, size = deletedMessagesFinal.size(); a < size; a++) {
                     long dialogId = deletedMessagesFinal.keyAt(a);
+                    if (shouldKeepDeleted(dialogId)) {
+                        continue;
+                    }
                     ArrayList<Integer> arrayList = deletedMessagesFinal.valueAt(a);
                     if (arrayList == null) {
                         continue;
@@ -21116,9 +21168,12 @@ public class MessagesController extends BaseController implements NotificationCe
                 getMessagesStorage().markMessagesContentAsRead(key, arrayList, currentTime2, markContentAsReadMessagesDate);
             }
         }
-        if (deletedMessages != null) {
+         if (deletedMessages != null) {
             for (int a = 0, size = deletedMessages.size(); a < size; a++) {
                 long key = deletedMessages.keyAt(a);
+                if (shouldKeepDeleted(key)) {
+                    continue;
+                }
                 ArrayList<Integer> arrayList = deletedMessages.valueAt(a);
                 getMessagesStorage().getStorageQueue().postRunnable(() -> {
                     ArrayList<Long> dialogIds = getMessagesStorage().markMessagesAsDeleted(key, arrayList, false, true, 0, 0);
@@ -21564,7 +21619,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     }
 
                     int messageId = -10000000;
-                    for (int a = 0, N = res.messages.size(); a < N; a++) {
+                    for (int a = 0, N = 0; a < N; a++) {
                         TLRPC.TL_sponsoredMessage sponsoredMessage = res.messages.get(a);
                         TLRPC.TL_message message = new TLRPC.TL_message();
                         if (!sponsoredMessage.entities.isEmpty()) {
