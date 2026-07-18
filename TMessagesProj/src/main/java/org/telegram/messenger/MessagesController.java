@@ -9341,7 +9341,7 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         getMessagesStorage().markMessageAsReadForSelf(dialogId, msgId);
-        getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, 0);
+        getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, UPDATE_MASK_READ_DIALOG_MESSAGE);
     }
 
     public void deleteMessages(ArrayList<Integer> messages, ArrayList<Long> randoms, TLRPC.EncryptedChat encryptedChat, long dialogId, int topicId, boolean forAll, int mode) {
@@ -19477,6 +19477,61 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
 
                 MessageObject.getDialogId(message);
+
+                // Capture edit history before storage: posted to storageQueue which is sequential,
+                // so this runs before the putMessages call (which also posts to storageQueue).
+                final TLRPC.Message editedMessage = message;
+                final long editDialogId = message.dialog_id;
+                getMessagesStorage().getStorageQueue().postRunnable(() -> {
+                    if (editedMessage.message == null) return;
+                    SQLiteCursor editCursor = null;
+                    try {
+                        // Read the stored message blob to get the old text
+                        editCursor = getMessagesStorage().getDatabase().queryFinalized(
+                            "SELECT data, custom_params FROM messages_v2 WHERE mid = ? AND uid = ?",
+                            editedMessage.id, editDialogId);
+                        if (!editCursor.next()) {
+                            editCursor.dispose();
+                            editCursor = null;
+                            // Try topics table
+                            editCursor = getMessagesStorage().getDatabase().queryFinalized(
+                                "SELECT data, custom_params FROM messages_topics WHERE mid = ? AND uid = ?",
+                                editedMessage.id, editDialogId);
+                            if (!editCursor.next()) return;
+                        }
+                        NativeByteBuffer dataBlob = editCursor.byteBufferValue(0);
+                        NativeByteBuffer customBlob = editCursor.byteBufferValue(1);
+                        editCursor.dispose();
+                        editCursor = null;
+
+                        String oldText = null;
+                        if (dataBlob != null) {
+                            TLRPC.Message storedMsg = TLRPC.Message.TLdeserialize(dataBlob, dataBlob.readInt32(false), false);
+                            dataBlob.reuse();
+                            if (storedMsg != null) oldText = storedMsg.message;
+                        }
+                        // Merge previously saved editHistory from custom_params
+                        if (customBlob != null) {
+                            TLRPC.Message tmp = new TLRPC.TL_message();
+                            MessageCustomParamsHelper.readLocalParams(tmp, customBlob);
+                            if (tmp.editHistory != null && !tmp.editHistory.isEmpty()) {
+                                if (editedMessage.editHistory == null) editedMessage.editHistory = new java.util.ArrayList<>();
+                                for (String h : tmp.editHistory) {
+                                    if (!editedMessage.editHistory.contains(h)) editedMessage.editHistory.add(h);
+                                }
+                            }
+                        }
+                        // Append old text if it differs from new text
+                        if (oldText != null && !oldText.isEmpty() && !oldText.equals(editedMessage.message)) {
+                            if (editedMessage.editHistory == null) editedMessage.editHistory = new java.util.ArrayList<>();
+                            if (!editedMessage.editHistory.contains(oldText)) editedMessage.editHistory.add(oldText);
+                        }
+                    } catch (Exception e) {
+                        FileLog.e(e);
+                    } finally {
+                        if (editCursor != null) editCursor.dispose();
+                    }
+                });
 
                 ConcurrentHashMap<Long, Integer> read_max = message.out ? dialogs_read_outbox_max : dialogs_read_inbox_max;
                 Integer value = read_max.get(message.dialog_id);
