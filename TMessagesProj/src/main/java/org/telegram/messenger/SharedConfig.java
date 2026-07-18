@@ -242,6 +242,7 @@ public class SharedConfig {
     public static boolean ghostMode;
     public static boolean keepDeleted;
     public static boolean keepDeletedInBots;
+    public static boolean showKeptDeleted = true;
     public static int keepMedia = CacheByChatsController.KEEP_MEDIA_ONE_MONTH; //deprecated
     public static int lastKeepMediaCheckTime;
     public static int lastLogsCheckTime;
@@ -492,6 +493,7 @@ public class SharedConfig {
                 editor.putBoolean("ghostMode", ghostMode);
                 editor.putBoolean("keepDeleted", keepDeleted);
                 editor.putBoolean("keepDeletedInBots", keepDeletedInBots);
+                editor.putBoolean("showKeptDeleted", showKeptDeleted);
                 editor.apply();
             } catch (Exception e) {
                 FileLog.e(e);
@@ -631,6 +633,7 @@ public class SharedConfig {
             ghostMode = preferences.getBoolean("ghostMode", false);
             keepDeleted = preferences.getBoolean("keepDeleted", false);
             keepDeletedInBots = preferences.getBoolean("keepDeletedInBots", false);
+            showKeptDeleted = preferences.getBoolean("showKeptDeleted", true);
             overrideDevicePerformanceClass = preferences.getInt("overrideDevicePerformanceClass", -1);
             devicePerformanceClass = preferences.getInt("devicePerformanceClass", -1);
             sortContactsByName = preferences.getBoolean("sortContactsByName", false);

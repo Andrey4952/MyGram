@@ -7560,6 +7560,10 @@ public class MessageObject {
         );
     }
 
+    public boolean isDeletedButKept() {
+        return messageOwner != null && messageOwner.deletedButKept;
+    }
+
     private boolean captionTranslated;
     private boolean captionSummarized;
 

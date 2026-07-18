@@ -91,6 +91,10 @@ public class ForkSettingsActivity extends BaseFragment {
                 SharedConfig.keepDeletedInBots = !SharedConfig.keepDeletedInBots;
                 ((TextCheckCell) view).setChecked(SharedConfig.keepDeletedInBots);
                 SharedConfig.saveConfig();
+            } else if (item.id == 7) {
+                SharedConfig.showKeptDeleted = !SharedConfig.showKeptDeleted;
+                ((TextCheckCell) view).setChecked(SharedConfig.showKeptDeleted);
+                SharedConfig.saveConfig();
             }
         });
 
@@ -115,6 +119,9 @@ public class ForkSettingsActivity extends BaseFragment {
 
         items.add(new ItemInner(VIEW_TYPE_CHECK, 5, "Keep Deleted Messages in Bots"));
         items.add(new ItemInner(VIEW_TYPE_SHADOW, 6, "Prevents deletion of messages in bots."));
+
+        items.add(new ItemInner(VIEW_TYPE_CHECK, 7, "Show kept deleted messages"));
+        items.add(new ItemInner(VIEW_TYPE_SHADOW, 8, "Displays a visual highlight on deleted messages."));
 
         if (adapter == null) {
             return;
@@ -190,6 +197,8 @@ public class ForkSettingsActivity extends BaseFragment {
                     checked = SharedConfig.keepDeleted;
                 } else if (item.id == 5) {
                     checked = SharedConfig.keepDeletedInBots;
+                } else if (item.id == 7) {
+                    checked = SharedConfig.showKeptDeleted;
                 } else {
                     return;
                 }
