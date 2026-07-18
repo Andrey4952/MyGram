@@ -45478,7 +45478,7 @@ public class ChatActivity extends BaseFragment implements
                     options.add(OPTION_VIEW_EDITS);
                     icons.add(R.drawable.msg_edit);
                 }
-                if (SharedConfig.ghostMode && selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
                     items.add("Read (ghost)");
                     options.add(OPTION_READ_GHOST);
                     icons.add(R.drawable.msg_seen);

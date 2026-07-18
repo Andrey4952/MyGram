@@ -19844,6 +19844,16 @@ public class MessagesController extends BaseController implements NotificationCe
                 for (int a = 0, size2 = messageObjects.size(); a < size2; a++) {
                     messagesRes.messages.add(messageObjects.get(a).messageOwner);
                 }
+                { // capture edit history
+                    for (int a2 = 0, size2a = messageObjects.size(); a2 < size2a; a2++) {
+                        TLRPC.Message message = messageObjects.get(a2).messageOwner;
+                        TLRPC.Message prev = getMessagesStorage().getMessageWithCustomParamsOnlyInternal(message.id, editingMessages.keyAt(b));
+                        if (prev != null && prev.message != null && message.message != null && !prev.message.equals(message.message)) {
+                            if (message.editHistory == null) message.editHistory = new java.util.ArrayList<>();
+                            if (!message.editHistory.contains(prev.message)) message.editHistory.add(prev.message);
+                        }
+                    }
+                }
                 getMessagesStorage().putMessages(messagesRes, editingMessages.keyAt(b), -2, 0, false, 0, 0);
             }
             LongSparseArray<ArrayList<MessageObject>> editingMessagesFinal = editingMessages;
