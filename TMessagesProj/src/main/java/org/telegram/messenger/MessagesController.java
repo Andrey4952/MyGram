@@ -9388,6 +9388,11 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, false, ChatActivity.MODE_QUICK_REPLIES, topicId);
             } else {
+                if (shouldKeepDeleted(dialogId)) {
+                    ArrayList<Integer> keptIds = new ArrayList<>();
+                    for (int i = 0; i < messages.size(); i++) keptIds.add(messages.get(i));
+                    getMessagesStorage().markMessagesAsDeletedButKept(dialogId, keptIds);
+                }
                 if (!shouldKeepDeleted(dialogId)) {
                     if (channelId == 0) {
                         for (int a = 0; a < messages.size(); a++) {
@@ -21067,6 +21072,12 @@ public class MessagesController extends BaseController implements NotificationCe
                 for (int a = 0, size = deletedMessagesFinal.size(); a < size; a++) {
                     long dialogId = deletedMessagesFinal.keyAt(a);
                     if (shouldKeepDeleted(dialogId)) {
+                        ArrayList<Integer> arrayList = deletedMessagesFinal.valueAt(a);
+                        if (arrayList != null) {
+                            ArrayList<Integer> keptIds = new ArrayList<>();
+                            for (int i = 0; i < arrayList.size(); i++) keptIds.add(arrayList.get(i));
+                            getMessagesStorage().markMessagesAsDeletedButKept(dialogId, keptIds);
+                        }
                         continue;
                     }
                     ArrayList<Integer> arrayList = deletedMessagesFinal.valueAt(a);

@@ -16000,6 +16000,15 @@ public class MessagesStorage extends BaseController {
                                     if (customParams != null) {
                                         customParams.reuse();
                                     }
+                                    if (oldMessage != null && oldMessage.message != null && !oldMessage.message.equals(message.message)) {
+                                        String oldText = oldMessage.message;
+                                        if (message.editHistory == null) {
+                                            message.editHistory = new java.util.ArrayList<>();
+                                        }
+                                        if (!message.editHistory.contains(oldText)) {
+                                            message.editHistory.add(oldText);
+                                        }
+                                    }
                                 }
                                 boolean oldMention = cursor.intValue(3) != 0;
                                 int readState = cursor.intValue(4);
