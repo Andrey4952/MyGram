@@ -1851,15 +1851,20 @@ public class ChatActivity extends BaseFragment implements
             }
             if (view instanceof ChatMessageCell) {
                 MessageObject msg = ((ChatMessageCell) view).getMessageObject();
-                if (msg != null && msg.type == MessageObject.TYPE_JOINED_CHANNEL) {
-                    msg.toggleChannelRecommendations();
-                    msg.forceUpdate = true;
-                    ((ChatMessageCell) view).forceResetMessageObject();
-                    view.requestLayout();
-                    if (position >= 0) {
-                        chatAdapter.notifyItemChanged(position);
+                if (msg != null) {
+                    if (SharedConfig.ghostMode) {
+                        getMessagesController().openMessageForSelf(dialog_id, msg.getId());
                     }
-                    return;
+                    if (msg.type == MessageObject.TYPE_JOINED_CHANNEL) {
+                        msg.toggleChannelRecommendations();
+                        msg.forceUpdate = true;
+                        ((ChatMessageCell) view).forceResetMessageObject();
+                        view.requestLayout();
+                        if (position >= 0) {
+                            chatAdapter.notifyItemChanged(position);
+                        }
+                        return;
+                    }
                 }
             }
             createMenu(view, true, false, x, y, false);
@@ -39113,6 +39118,9 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public boolean needPlayMessage(ChatMessageCell cell, MessageObject messageObject, boolean muted) {
+            if (messageObject != null && SharedConfig.ghostMode) {
+                getMessagesController().openMessageForSelf(dialog_id, messageObject.getId());
+            }
             if (messageObject.isVoiceOnce() || messageObject.isRoundOnce()) {
                 if (secretVoicePlayer != null && secretVoicePlayer.isShown()) return false;
                 try {
@@ -41043,6 +41051,9 @@ public class ChatActivity extends BaseFragment implements
         @Override
         public void didPressImage(ChatMessageCell cell, float x, float y, boolean fullPreview) {
             MessageObject message = cell.getMessageObject();
+            if (message != null && SharedConfig.ghostMode) {
+                getMessagesController().openMessageForSelf(dialog_id, message.getId());
+            }
             if (message.type == MessageObject.TYPE_STORY) {
                 if (message.messageOwner.media.storyItem != null && !(message.messageOwner.media.storyItem instanceof TL_stories.TL_storyItemDeleted)) {
                     TL_stories.StoryItem storyItem = message.messageOwner.media.storyItem;

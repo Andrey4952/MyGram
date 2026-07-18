@@ -4874,6 +4874,9 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP && org.telegram.messenger.SharedConfig.ghostMode && currentMessageObject != null) {
+            org.telegram.messenger.MessagesController.getInstance(currentAccount).openMessageForSelf(currentMessageObject.getDialogId(), currentMessageObject.getId());
+        }
         if (currentMessageObject == null || delegate != null && !delegate.canPerformActions() || animationRunning) {
             if (currentMessageObject != null && currentMessageObject.preview) {
                 return checkTextSelection(event);
@@ -20621,8 +20624,13 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private void drawDeletedButKeptHighlight(Canvas canvas) {
+        Rect bounds = null;
         if (currentBackgroundDrawable != null) {
-            Rect bounds = currentBackgroundDrawable.getBounds();
+            bounds = currentBackgroundDrawable.getBounds();
+        } else {
+            bounds = new Rect(backgroundDrawableLeft, backgroundDrawableTop, backgroundDrawableRight, backgroundDrawableBottom);
+        }
+        if (bounds != null) {
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             paint.setColor(0x1CFF0000); // 11% alpha red overlay
             paint.setStyle(Paint.Style.FILL);

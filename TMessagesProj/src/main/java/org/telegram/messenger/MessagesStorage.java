@@ -12486,6 +12486,50 @@ public class MessagesStorage extends BaseController {
                     if (message.local_id != 0) {
                         messageId = message.local_id;
                     }
+                    SQLiteCursor editCursor = null;
+                    try {
+                        editCursor = database.queryFinalized(String.format(Locale.US, "SELECT data, custom_params FROM messages_v2 WHERE mid = %d AND uid = %d LIMIT 1", messageId, message.dialog_id));
+                        if (editCursor.next()) {
+                            NativeByteBuffer oldData = editCursor.byteBufferValue(0);
+                            NativeByteBuffer oldCustomParams = editCursor.byteBufferValue(1);
+                            if (oldData != null) {
+                                TLRPC.Message oldMessage = TLRPC.Message.TLdeserialize(oldData, oldData.readInt32(false), false);
+                                oldData.reuse();
+                                if (oldMessage != null) {
+                                    if (oldCustomParams != null) {
+                                        MessageCustomParamsHelper.readLocalParams(oldMessage, oldCustomParams);
+                                        oldCustomParams.reuse();
+                                        oldCustomParams = null;
+                                    }
+                                    if (oldMessage.message != null && !oldMessage.message.equals(message.message)) {
+                                        if (message.editHistory == null) {
+                                            message.editHistory = new java.util.ArrayList<>();
+                                        }
+                                        if (oldMessage.editHistory != null) {
+                                            for (String s : oldMessage.editHistory) {
+                                                if (!message.editHistory.contains(s)) {
+                                                    message.editHistory.add(s);
+                                                }
+                                            }
+                                        }
+                                        String oldText = oldMessage.message.toString();
+                                        if (!message.editHistory.contains(oldText)) {
+                                            message.editHistory.add(oldText);
+                                        }
+                                    }
+                                }
+                            }
+                            if (oldCustomParams != null) {
+                                oldCustomParams.reuse();
+                            }
+                        }
+                    } catch (Exception e) {
+                        FileLog.e(e);
+                    } finally {
+                        if (editCursor != null) {
+                            editCursor.dispose();
+                        }
+                    }
                     MessageObject.normalizeFlags(message);
                     NativeByteBuffer data = new NativeByteBuffer(message.getObjectSize());
                     message.serializeToStream(data);
@@ -15484,13 +15528,48 @@ public class MessagesStorage extends BaseController {
                 int readState = 0;
                 NativeByteBuffer customParams = null;
                 try {
-                    cursor = database.queryFinalized(String.format(Locale.US, "SELECT uid, read_state, custom_params FROM messages_v2 WHERE mid = %d AND uid = %d LIMIT 1", message.id, MessageObject.getDialogId(message)));
+                    cursor = database.queryFinalized(String.format(Locale.US, "SELECT data, read_state, custom_params FROM messages_v2 WHERE mid = %d AND uid = %d LIMIT 1", message.id, MessageObject.getDialogId(message)));
                     if (!cursor.next()) {
                         cursor.dispose();
                         return;
                     }
                     readState = cursor.intValue(1);
-                    customParams = cursor.byteBufferValue(2);
+                    NativeByteBuffer oldData = cursor.byteBufferValue(0);
+                    NativeByteBuffer oldCustomParams = cursor.byteBufferValue(2);
+                    if (oldData != null) {
+                        try {
+                            TLRPC.Message oldMessage = TLRPC.Message.TLdeserialize(oldData, oldData.readInt32(false), false);
+                            oldData.reuse();
+                            if (oldMessage != null) {
+                                if (oldCustomParams != null) {
+                                    MessageCustomParamsHelper.readLocalParams(oldMessage, oldCustomParams);
+                                    oldCustomParams.reuse();
+                                    oldCustomParams = null;
+                                }
+                                if (oldMessage.message != null && !oldMessage.message.equals(message.message)) {
+                                    if (message.editHistory == null) {
+                                        message.editHistory = new java.util.ArrayList<>();
+                                    }
+                                    if (oldMessage.editHistory != null) {
+                                        for (String s : oldMessage.editHistory) {
+                                            if (!message.editHistory.contains(s)) {
+                                                message.editHistory.add(s);
+                                            }
+                                        }
+                                    }
+                                    String oldText = oldMessage.message.toString();
+                                    if (!message.editHistory.contains(oldText)) {
+                                        message.editHistory.add(oldText);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            FileLog.e(e);
+                        }
+                    }
+                    if (oldCustomParams != null) {
+                        oldCustomParams.reuse();
+                    }
                 } catch (Exception e) {
                     checkSQLException(e);
                 } finally {
@@ -15498,6 +15577,7 @@ public class MessagesStorage extends BaseController {
                         cursor.dispose();
                     }
                 }
+                customParams = MessageCustomParamsHelper.writeLocalParams(message);
 
                 database.beginTransaction();
 
