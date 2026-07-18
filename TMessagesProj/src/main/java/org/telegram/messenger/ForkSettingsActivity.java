@@ -95,6 +95,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 SharedConfig.showKeptDeleted = !SharedConfig.showKeptDeleted;
                 ((TextCheckCell) view).setChecked(SharedConfig.showKeptDeleted);
                 SharedConfig.saveConfig();
+                NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
             }
         });
 
