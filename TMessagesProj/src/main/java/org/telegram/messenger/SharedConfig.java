@@ -239,6 +239,9 @@ public class SharedConfig {
     public static boolean useFaceLock = true;
     public static int suggestStickers;
     public static boolean suggestAnimatedEmoji;
+    public static boolean ghostMode;
+    public static boolean keepDeleted;
+    public static boolean keepDeletedInBots;
     public static int keepMedia = CacheByChatsController.KEEP_MEDIA_ONE_MONTH; //deprecated
     public static int lastKeepMediaCheckTime;
     public static int lastLogsCheckTime;
@@ -486,6 +489,9 @@ public class SharedConfig {
                 editor.putBoolean("hasEmailLogin", hasEmailLogin);
                 editor.putBoolean("floatingDebugActive", isFloatingDebugActive);
                 editor.putBoolean("record_via_sco", recordViaSco);
+                editor.putBoolean("ghostMode", ghostMode);
+                editor.putBoolean("keepDeleted", keepDeleted);
+                editor.putBoolean("keepDeletedInBots", keepDeletedInBots);
                 editor.apply();
             } catch (Exception e) {
                 FileLog.e(e);
@@ -622,6 +628,9 @@ public class SharedConfig {
             streamMkv = preferences.getBoolean("streamMkv", false);
             suggestStickers = preferences.getInt("suggestStickers", 0);
             suggestAnimatedEmoji = preferences.getBoolean("suggestAnimatedEmoji", true);
+            ghostMode = preferences.getBoolean("ghostMode", false);
+            keepDeleted = preferences.getBoolean("keepDeleted", false);
+            keepDeletedInBots = preferences.getBoolean("keepDeletedInBots", false);
             overrideDevicePerformanceClass = preferences.getInt("overrideDevicePerformanceClass", -1);
             devicePerformanceClass = preferences.getInt("devicePerformanceClass", -1);
             sortContactsByName = preferences.getBoolean("sortContactsByName", false);
