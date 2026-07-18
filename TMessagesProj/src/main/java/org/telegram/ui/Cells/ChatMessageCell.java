@@ -20611,10 +20611,25 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 }
             }
         }
+        if (currentMessageObject != null && currentMessageObject.isDeletedButKept() && SharedConfig.showKeptDeleted) {
+            drawDeletedButKeptHighlight(canvas);
+        }
         if (currentMessageObject != null && currentMessageObject.isRoundVideo()) {
             currentBackgroundDrawable.setRoundingRadius(0);
         }
         canvas.restoreToCount(restoreCount);
+    }
+
+    private void drawDeletedButKeptHighlight(Canvas canvas) {
+        if (currentBackgroundDrawable != null) {
+            Rect bounds = currentBackgroundDrawable.getBounds();
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(0x1CFF0000); // 11% alpha red overlay
+            paint.setStyle(Paint.Style.FILL);
+            float radius = dp(SharedConfig.bubbleRadius);
+            RectF rectF = new RectF(bounds);
+            canvas.drawRoundRect(rectF, radius, radius, paint);
+        }
     }
 
     private void animateCheckboxTranslation() {

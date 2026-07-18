@@ -5673,6 +5673,114 @@ public class MessagesStorage extends BaseController {
         return message;
     }
 
+    public void markMessagesAsDeletedButKept(long dialogId, ArrayList<Integer> messages) {
+        storageQueue.postRunnable(() -> {
+            SQLitePreparedStatement state = null;
+            SQLitePreparedStatement stateTopics = null;
+            try {
+                database.beginTransaction();
+                state = database.executeFast("UPDATE messages_v2 SET custom_params = ? WHERE mid = ? AND uid = ?");
+                stateTopics = database.executeFast("UPDATE messages_topics SET custom_params = ? WHERE mid = ? AND uid = ?");
+                for (int a = 0; a < messages.size(); a++) {
+                    int messageId = messages.get(a);
+                    TLRPC.Message message = getMessageWithCustomParamsOnlyInternal(messageId, dialogId);
+                    if (message != null) {
+                        message.deletedButKept = true;
+                        NativeByteBuffer nativeByteBuffer = MessageCustomParamsHelper.writeLocalParams(message);
+                        
+                        state.requery();
+                        if (nativeByteBuffer != null) {
+                            state.bindByteBuffer(1, nativeByteBuffer);
+                        } else {
+                            state.bindNull(1);
+                        }
+                        state.bindInteger(2, messageId);
+                        state.bindLong(3, dialogId);
+                        state.step();
+
+                        stateTopics.requery();
+                        if (nativeByteBuffer != null) {
+                            stateTopics.bindByteBuffer(1, nativeByteBuffer);
+                        } else {
+                            stateTopics.bindNull(1);
+                        }
+                        stateTopics.bindInteger(2, messageId);
+                        stateTopics.bindLong(3, dialogId);
+                        stateTopics.step();
+
+                        if (nativeByteBuffer != null) {
+                            nativeByteBuffer.reuse();
+                        }
+                    }
+                }
+                database.commitTransaction();
+            } catch (Exception e) {
+                checkSQLException(e);
+            } finally {
+                if (state != null) state.dispose();
+                if (stateTopics != null) stateTopics.dispose();
+            }
+        });
+    }
+
+    public void updateMessageEditHistory(long dialogId, int messageId, ArrayList<String> editHistory) {
+        storageQueue.postRunnable(() -> {
+            SQLitePreparedStatement state = null;
+            SQLitePreparedStatement stateTopics = null;
+            try {
+                database.beginTransaction();
+                TLRPC.Message message = getMessageWithCustomParamsOnlyInternal(messageId, dialogId);
+                if (message != null) {
+                    message.editHistory = editHistory;
+                    NativeByteBuffer nativeByteBuffer = MessageCustomParamsHelper.writeLocalParams(message);
+                    
+                    state = database.executeFast("UPDATE messages_v2 SET custom_params = ? WHERE mid = ? AND uid = ?");
+                    state.requery();
+                    if (nativeByteBuffer != null) {
+                        state.bindByteBuffer(1, nativeByteBuffer);
+                    } else {
+                        state.bindNull(1);
+                    }
+                    state.bindInteger(2, messageId);
+                    state.bindLong(3, dialogId);
+                    state.step();
+
+                    stateTopics = database.executeFast("UPDATE messages_topics SET custom_params = ? WHERE mid = ? AND uid = ?");
+                    stateTopics.requery();
+                    if (nativeByteBuffer != null) {
+                        stateTopics.bindByteBuffer(1, nativeByteBuffer);
+                    } else {
+                        stateTopics.bindNull(1);
+                    }
+                    stateTopics.bindInteger(2, messageId);
+                    stateTopics.bindLong(3, dialogId);
+                    stateTopics.step();
+
+                    if (nativeByteBuffer != null) {
+                        nativeByteBuffer.reuse();
+                    }
+                }
+                database.commitTransaction();
+            } catch (Exception e) {
+                checkSQLException(e);
+            } finally {
+                if (state != null) state.dispose();
+                if (stateTopics != null) stateTopics.dispose();
+            }
+        });
+    }
+
+    public void markMessageAsReadForSelf(long dialogId, int messageId) {
+        storageQueue.postRunnable(() -> {
+            try {
+                database.executeFast(String.format(Locale.US, "UPDATE messages_v2 SET read_state = read_state | 1 WHERE mid = %d AND uid = %d", messageId, dialogId)).stepThis().dispose();
+                database.executeFast(String.format(Locale.US, "UPDATE messages_topics SET read_state = read_state | 1 WHERE mid = %d AND uid = %d", messageId, dialogId)).stepThis().dispose();
+            } catch (Exception e) {
+                checkSQLException(e);
+            }
+        });
+    }
+
     public void getNewTask(LongSparseArray<ArrayList<Integer>> oldTask, LongSparseArray<ArrayList<Integer>> oldTaskMedia) {
         storageQueue.postRunnable(() -> {
             SQLiteCursor cursor = null;

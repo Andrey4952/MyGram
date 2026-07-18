@@ -1,5 +1,6 @@
 package org.telegram.messenger;
 
+import java.util.ArrayList;
 import org.telegram.tgnet.InputSerializedData;
 import org.telegram.tgnet.NativeByteBuffer;
 import org.telegram.tgnet.OutputSerializedData;
@@ -29,7 +30,9 @@ public class MessageCustomParamsHelper {
             message.translatedText == null &&
             message.translatedRichMessage == null &&
             message.errorAllowedPriceStars == 0 &&
-            message.errorNewPriceStars == 0
+            message.errorNewPriceStars == 0 &&
+            !message.deletedButKept &&
+            (message.editHistory == null || message.editHistory.isEmpty())
         );
     }
 
@@ -53,6 +56,8 @@ public class MessageCustomParamsHelper {
         toMessage.summaryText = fromMessage.summaryText;
         toMessage.translatedSummaryText = fromMessage.translatedSummaryText;
         toMessage.translatedSummaryLanguage = fromMessage.translatedSummaryLanguage;
+        toMessage.deletedButKept = fromMessage.deletedButKept;
+        toMessage.editHistory = fromMessage.editHistory != null ? new ArrayList<>(fromMessage.editHistory) : null;
     }
 
 
@@ -114,6 +119,8 @@ public class MessageCustomParamsHelper {
             flags = setFlag(flags, FLAG_12, message.translatedSummaryLanguage != null);
 
             flags = setFlag(flags, FLAG_13, message.translatedRichMessage != null);
+            flags = setFlag(flags, FLAG_14, message.deletedButKept);
+            flags = setFlag(flags, FLAG_15, message.editHistory != null && !message.editHistory.isEmpty());
         }
 
         @Override
@@ -121,6 +128,8 @@ public class MessageCustomParamsHelper {
             stream.writeInt32(VERSION);
             flags = message.voiceTranscriptionForce ? (flags | 2) : (flags &~ 2);
             flags = message.summarizedOpen ? (flags | 512) : (flags &~ 512);
+            flags = setFlag(flags, FLAG_14, message.deletedButKept);
+            flags = setFlag(flags, FLAG_15, message.editHistory != null && !message.editHistory.isEmpty());
             stream.writeInt32(flags);
             if ((flags & 1) != 0) {
                 stream.writeString(message.voiceTranscription);
@@ -165,6 +174,12 @@ public class MessageCustomParamsHelper {
             }
             if (hasFlag(flags, FLAG_13)) {
                 message.translatedRichMessage.serializeToStream(stream);
+            }
+            if (hasFlag(flags, FLAG_15)) {
+                stream.writeInt32(message.editHistory.size());
+                for (int a = 0; a < message.editHistory.size(); a++) {
+                    stream.writeString(message.editHistory.get(a));
+                }
             }
         }
 
@@ -215,6 +230,14 @@ public class MessageCustomParamsHelper {
             }
             if (hasFlag(flags, FLAG_13)) {
                 message.translatedRichMessage = TL_iv.RichMessage.TLdeserialize(stream, stream.readInt32(exception), exception);
+            }
+            message.deletedButKept = hasFlag(flags, FLAG_14);
+            if (hasFlag(flags, FLAG_15)) {
+                int count = stream.readInt32(exception);
+                message.editHistory = new ArrayList<>();
+                for (int a = 0; a < count; a++) {
+                    message.editHistory.add(stream.readString(exception));
+                }
             }
         }
 

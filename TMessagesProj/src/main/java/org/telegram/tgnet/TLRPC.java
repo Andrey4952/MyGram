@@ -58189,6 +58189,8 @@ public class TLRPC {
         public boolean isThreadMessage; //custom
         public String voiceTranscription; //custom
         public boolean voiceTranscriptionOpen; //custom
+        public boolean deletedButKept; //custom
+        public java.util.ArrayList<String> editHistory; //custom
         public boolean voiceTranscriptionRated; //custom
         public boolean voiceTranscriptionFinal; //custom
         public boolean voiceTranscriptionForce; //custom

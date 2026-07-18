@@ -9326,6 +9326,24 @@ public class MessagesController extends BaseController implements NotificationCe
         return org.telegram.messenger.SharedConfig.keepDeleted;
     }
 
+    public void openMessageForSelf(long dialogId, int msgId) {
+        MessageObject obj = dialogMessagesByIds.get(msgId);
+        if (obj != null) {
+            obj.messageOwner.unread = false;
+        }
+        ArrayList<MessageObject> objs = dialogMessage.get(dialogId);
+        if (objs != null) {
+            for (int i = 0; i < objs.size(); ++i) {
+                MessageObject m = objs.get(i);
+                if (m != null && m.getId() == msgId) {
+                    m.messageOwner.unread = false;
+                }
+            }
+        }
+        getMessagesStorage().markMessageAsReadForSelf(dialogId, msgId);
+        getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, 0);
+    }
+
     public void deleteMessages(ArrayList<Integer> messages, ArrayList<Long> randoms, TLRPC.EncryptedChat encryptedChat, long dialogId, int topicId, boolean forAll, int mode) {
         deleteMessages(messages, randoms, encryptedChat, dialogId, forAll, mode, false, 0, null, topicId);
     }

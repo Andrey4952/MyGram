@@ -1238,6 +1238,7 @@ public class ChatActivity extends BaseFragment implements
     public final static int OPTION_SUGGESTION_ADD_OFFER = 114;
 
     public final static int OPTION_VIEW_STATISTICS = 115;
+    public final static int OPTION_VIEW_EDITS = 120;
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             NotificationCenter.messagesRead,
@@ -33091,6 +33092,10 @@ public class ChatActivity extends BaseFragment implements
                 createDeleteMessagesAlert(selectedObject, selectedObjectGroup, true);
                 break;
             }
+            case OPTION_VIEW_EDITS: {
+                showEditHistoryBottomSheet(selectedObject);
+                break;
+            }
             case OPTION_FORWARD: {
                 if (getMessagesController().isFrozen()) {
                     AccountFrozenAlert.show(currentAccount);
@@ -34089,6 +34094,26 @@ public class ChatActivity extends BaseFragment implements
         } else {
             onLoad.run();
         }
+    }
+
+    private void showEditHistoryBottomSheet(MessageObject messageObject) {
+        if (messageObject == null || getParentActivity() == null) {
+            return;
+        }
+        java.util.ArrayList<String> editHistory = messageObject.messageOwner != null ? messageObject.messageOwner.editHistory : null;
+        BottomSheet.Builder builder = new BottomSheet.Builder(getParentActivity(), false, themeDelegate);
+        builder.setTitle("Edit History");
+        builder.setTitleMultipleLines(true);
+        if (editHistory == null || editHistory.isEmpty()) {
+            builder.setItems(new CharSequence[]{ "No edits" }, (dialog, which) -> dialog.dismiss());
+        } else {
+            CharSequence[] items = new CharSequence[editHistory.size()];
+            for (int i = 0; i < editHistory.size(); i++) {
+                items[i] = editHistory.get(i);
+            }
+            builder.setItems(items, (dialog, which) -> dialog.dismiss());
+        }
+        showDialog(builder.create());
     }
 
     private void hideAds() {
@@ -45433,6 +45458,11 @@ public class ChatActivity extends BaseFragment implements
                 if (message.canEditMessage(currentChat) && message.type != MessageObject.TYPE_POLL) {
                     items.add(LocaleController.getString(R.string.Edit));
                     options.add(OPTION_EDIT);
+                    icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("View edits");
+                    options.add(OPTION_VIEW_EDITS);
                     icons.add(R.drawable.msg_edit);
                 }
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
