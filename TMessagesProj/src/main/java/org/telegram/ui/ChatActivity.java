@@ -1249,6 +1249,7 @@ public class ChatActivity extends BaseFragment implements
     public final static int OPTION_VIEW_STATISTICS = 115;
     public final static int OPTION_WELCOME_REVERT = 116;
     public final static int OPTION_VIEW_EDITS = 120;
+    public final static int OPTION_READ_GHOST = 121;
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             NotificationCenter.messagesRead,
@@ -1875,9 +1876,6 @@ public class ChatActivity extends BaseFragment implements
             if (view instanceof ChatMessageCell) {
                 MessageObject msg = ((ChatMessageCell) view).getMessageObject();
                 if (msg != null) {
-                    if (SharedConfig.ghostMode) {
-                        getMessagesController().openMessageForSelf(dialog_id, msg.getId());
-                    }
                     if (msg.type == MessageObject.TYPE_JOINED_CHANNEL) {
                         msg.toggleChannelRecommendations();
                         msg.forceUpdate = true;
@@ -33344,6 +33342,10 @@ public class ChatActivity extends BaseFragment implements
                 showEditHistoryBottomSheet(selectedObject);
                 break;
             }
+            case OPTION_READ_GHOST: {
+                getMessagesController().openMessageForSelf(dialog_id, selectedObject.getId());
+                break;
+            }
             case OPTION_FORWARD: {
                 if (getMessagesController().isFrozen()) {
                     AccountFrozenAlert.show(currentAccount);
@@ -45857,6 +45859,11 @@ public class ChatActivity extends BaseFragment implements
                     items.add("View edits");
                     options.add(OPTION_VIEW_EDITS);
                     icons.add(R.drawable.msg_edit);
+                }
+                if (SharedConfig.ghostMode && selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("Read (ghost)");
+                    options.add(OPTION_READ_GHOST);
+                    icons.add(R.drawable.msg_seen);
                 }
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
                     items.add(LocaleController.getString(R.string.EditOfferAdd));
