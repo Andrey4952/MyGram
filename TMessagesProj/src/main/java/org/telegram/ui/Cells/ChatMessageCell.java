@@ -18453,7 +18453,25 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 currentTimeString = TextUtils.concat(formatString(R.string.MessageScheduledRepeatSeconds, period), ", ", currentTimeString);
             }
         }
+        if (currentMessageObject.isDeletedButKept()) {
+            android.util.Log.d("ANTIGRAVITY", "setMessageContent: message is deleted but kept! id=" + currentMessageObject.getId() + " showKeptDeleted=" + SharedConfig.showKeptDeleted);
+        }
+        if (currentMessageObject.isDeletedButKept() && SharedConfig.showKeptDeleted) {
+            SpannableStringBuilder ssb = new SpannableStringBuilder("   ");
+            ColoredImageSpan span = new ColoredImageSpan(R.drawable.msg_delete, ColoredImageSpan.ALIGN_CENTER);
+            span.setScale(0.7f, 0.7f);
+            ssb.setSpan(span, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            currentTimeString = TextUtils.concat(ssb, currentTimeString);
+        }
         timeTextWidth = timeWidth = (int) Math.ceil(Theme.chat_timePaint.measureText(currentTimeString, 0, currentTimeString == null ? 0 : currentTimeString.length()));
+        if (currentMessageObject.isDeletedButKept() && SharedConfig.showKeptDeleted) {
+            Drawable d = ContextCompat.getDrawable(ApplicationLoader.applicationContext, R.drawable.msg_delete);
+            int drawableWidth = d != null ? d.getIntrinsicWidth() : dp(18);
+            int spanWidth = (int) (0.7f * drawableWidth);
+            float spaceWidth = Theme.chat_timePaint.measureText(" ");
+            timeWidth += (spanWidth - spaceWidth);
+            timeTextWidth += (spanWidth - spaceWidth);
+        }
         if (currentMessageObject.scheduled && currentMessageObject.messageOwner.date == 0x7FFFFFFE || currentMessageObject.notime) {
             timeWidth -= dp(8);
         }
@@ -20615,7 +20633,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             }
         }
         if (currentMessageObject != null && currentMessageObject.isDeletedButKept() && SharedConfig.showKeptDeleted) {
-            drawDeletedButKeptHighlight(canvas);
+            // drawDeletedButKeptHighlight(canvas);
         }
         if (currentMessageObject != null && currentMessageObject.isRoundVideo()) {
             currentBackgroundDrawable.setRoundingRadius(0);
@@ -23708,6 +23726,15 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     private void drawTimeInternal(Canvas canvas, float alpha, boolean fromParent, float timeX, StaticLayout timeLayout, float timeWidth, boolean drawSelectionBackground) {
         if ((!drawTime || groupPhotoInvisible) && shouldDrawTimeOnMedia() || timeLayout == null || (currentMessageObject.deleted && currentPosition != null) || currentMessageObject.type == MessageObject.TYPE_PHONE_CALL) {
             return;
+        }
+        if (timeLayout.getPaint() != Theme.chat_timePaint) {
+            StaticLayout newLayout = new StaticLayout(timeLayout.getText(), Theme.chat_timePaint, timeLayout.getWidth(), timeLayout.getAlignment(), 1.0f, 0.0f, false);
+            if (timeLayout == this.timeLayout) {
+                this.timeLayout = newLayout;
+            } else if (transitionParams != null && timeLayout == transitionParams.animateTimeLayout) {
+                transitionParams.animateTimeLayout = newLayout;
+            }
+            timeLayout = newLayout;
         }
         if (currentMessageObject.type == MessageObject.TYPE_ROUND_VIDEO) {
             Theme.chat_timePaint.setColor(
