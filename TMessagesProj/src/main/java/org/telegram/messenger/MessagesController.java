@@ -14671,6 +14671,16 @@ public class MessagesController extends BaseController implements NotificationCe
         getConnectionsManager().sendRequest(req, null);
     }
 
+    public void forceMarkDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount) {
+        boolean oldGhostMode = org.telegram.messenger.SharedConfig.ghostMode;
+        org.telegram.messenger.SharedConfig.ghostMode = false;
+        try {
+            markDialogAsRead(dialogId, maxPositiveId, maxNegativeId, maxDate, popup, threadId, countDiff, readNow, scheduledCount);
+        } finally {
+            org.telegram.messenger.SharedConfig.ghostMode = oldGhostMode;
+        }
+    }
+
     public void markDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount) {
         if (org.telegram.messenger.SharedConfig.ghostMode) {
             return;
@@ -14727,7 +14737,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (!popup) {
                         getNotificationsController().processReadMessages(null, dialogId, 0, maxPositiveId, false);
                         LongSparseIntArray dialogsToUpdate = new LongSparseIntArray(1);
-                        dialogsToUpdate.put(dialogId, 0);
+                        dialogsToUpdate.put(dialogId, dialog != null ? dialog.unread_count : 0);
                         getNotificationsController().processDialogsUpdateRead(dialogsToUpdate);
                     } else {
                         getNotificationsController().processReadMessages(null, dialogId, 0, maxPositiveId, true);

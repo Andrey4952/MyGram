@@ -1685,7 +1685,7 @@ public class ChatActivity extends BaseFragment implements
                 showMenu = messageObject.messageOwner.action instanceof TLRPC.TL_messageActionSetMessagesTTL || actionCell.getMessageObject().type == MessageObject.TYPE_SUGGEST_PHOTO || actionCell.getMessageObject().isWallpaperAction() || actionCell.getMessageObject().type == MessageObject.TYPE_GIFT_STARS;
             }
             if (!actionBar.isActionModeShowed() && (!isReport() || showMenu)) {
-                result = createMenu(view, true, true, x, y, true);
+                result = createMenu(view, false, true, x, y, true);
             } else {
                 boolean outside = false;
                 if (view instanceof ChatMessageCell) {
@@ -30725,7 +30725,7 @@ public class ChatActivity extends BaseFragment implements
                 }, true, 0, getResourceProvider());
                 autoDeletePopupWrapper.updateItems(userInfo != null ? userInfo.ttl_period : chatInfo.ttl_period);
                 optionsView = autoDeletePopupWrapper.windowLayout;
-            } else {
+            } else if (type >= 0 || type == -1 && single && (message.isSending() || message.isEditing()) && currentEncryptedChat == null) {
                 selectedObject = message;
                 selectedObjectGroup = groupedMessages;
                 fillMessageMenu(primaryMessage, icons, items, options);
@@ -33100,7 +33100,32 @@ public class ChatActivity extends BaseFragment implements
                 break;
             }
             case OPTION_READ_GHOST: {
-                getMessagesController().openMessageForSelf(dialog_id, selectedObject.getId());
+                if (selectedObject != null && selectedObject.messageOwner != null) {
+                    int counterDecrement = 0;
+                    Integer currentReadMaxId = getMessagesController().dialogs_read_inbox_max.get(dialog_id);
+                    if (currentReadMaxId == null) {
+                        currentReadMaxId = 0;
+                    }
+                    for (int a = 0; a < messages.size(); a++) {
+                        MessageObject messageObject = messages.get(a);
+                        int id = messageObject.getId();
+                        if (id > currentReadMaxId && id <= selectedObject.getId() && !messageObject.isOutOwner()) {
+                            messageObject.setIsRead();
+                            counterDecrement++;
+                        }
+                    }
+                    newUnreadMessageCount -= counterDecrement;
+                    if (newUnreadMessageCount < 0) {
+                        newUnreadMessageCount = 0;
+                    }
+                    if (prevSetUnreadCount != newUnreadMessageCount) {
+                        prevSetUnreadCount = newUnreadMessageCount;
+                        if (sideControlsButtonsLayout != null) {
+                            sideControlsButtonsLayout.setButtonCount(ChatActivitySideControlsButtonsLayout.BUTTON_PAGE_DOWN, newUnreadMessageCount, true);
+                        }
+                    }
+                    getMessagesController().forceMarkDialogAsRead(dialog_id, selectedObject.getId(), selectedObject.getId(), selectedObject.messageOwner.date, false, 0, counterDecrement, true, 0);
+                }
                 break;
             }
             case OPTION_FORWARD: {
@@ -40303,9 +40328,8 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public void didLongPress(ChatMessageCell cell, float x, float y) {
-            if (!createMenu(cell, true, false, x, y, false)) {
-                startMultiselect(chatListView.getChildAdapterPosition(cell));
-            }
+            createMenu(cell, false, false, x, y, false);
+            startMultiselect(chatListView.getChildAdapterPosition(cell));
         }
 
         @Override
@@ -45474,16 +45498,6 @@ public class ChatActivity extends BaseFragment implements
                     options.add(OPTION_EDIT);
                     icons.add(R.drawable.msg_edit);
                 }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("View edits");
-                    options.add(OPTION_VIEW_EDITS);
-                    icons.add(R.drawable.msg_edit);
-                }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("Read (ghost)");
-                    options.add(OPTION_READ_GHOST);
-                    icons.add(R.drawable.msg_seen);
-                }
 
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
                     items.add(LocaleController.getString(R.string.EditOfferAdd));
@@ -45505,16 +45519,6 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Reply));
                     options.add(OPTION_REPLY);
                     icons.add(R.drawable.menu_reply);
-                }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("View edits");
-                    options.add(OPTION_VIEW_EDITS);
-                    icons.add(R.drawable.msg_edit);
-                }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("Read (ghost)");
-                    options.add(OPTION_READ_GHOST);
-                    icons.add(R.drawable.msg_seen);
                 }
             }
             if (selectedObject != null && selectedObject.messageOwner != null && currentUser != null && !UserObject.isService(currentUser.id) && (selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionStarGift || selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionStarGiftUnique || selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionGiftPremium)) {
@@ -45818,6 +45822,16 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Edit));
                     options.add(OPTION_EDIT);
                     icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL && selectedObject.messageOwner != null && selectedObject.messageOwner.editHistory != null && !selectedObject.messageOwner.editHistory.isEmpty()) {
+                    items.add("View edits");
+                    options.add(OPTION_VIEW_EDITS);
+                    icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL && !selectedObject.isOutOwner()) {
+                    items.add("Read (ghost)");
+                    options.add(OPTION_READ_GHOST);
+                    icons.add(R.drawable.msg_seen);
                 }
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
                     items.add(LocaleController.getString(R.string.EditOfferAdd));

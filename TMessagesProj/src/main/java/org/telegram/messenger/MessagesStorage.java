@@ -6868,7 +6868,12 @@ public class MessagesStorage extends BaseController {
                             }
 
                             if (canCountByMessageId) {
-                                SQLiteCursor cursor = database.queryFinalized(String.format(Locale.US, "SELECT COUNT(mid) FROM messages_v2 WHERE uid = %d AND mid > %d AND read_state IN(0,2) AND out = 0", key, messageId));
+                                SQLiteCursor cursor;
+                                if (org.telegram.messenger.SharedConfig.ghostMode) {
+                                    cursor = database.queryFinalized(String.format(Locale.US, "SELECT COUNT(mid) FROM messages_v2 WHERE uid = %d AND mid > %d AND out = 0", key, messageId));
+                                } else {
+                                    cursor = database.queryFinalized(String.format(Locale.US, "SELECT COUNT(mid) FROM messages_v2 WHERE uid = %d AND mid > %d AND read_state IN(0,2) AND out = 0", key, messageId));
+                                }
                                 if (cursor.next()) {
                                     int unread = cursor.intValue(0);
                                     dialogsToUpdate.put(key, unread);
@@ -8227,11 +8232,20 @@ public class MessagesStorage extends BaseController {
                         unreadCount = 0;
                     } else {
                         int updatedCount = 0;
-                        cursor = database.queryFinalized("SELECT changes()");
-                        if (cursor.next()) {
-                            updatedCount = cursor.intValue(0) + scheduledCount;
+                        if (org.telegram.messenger.SharedConfig.ghostMode) {
+                            SQLiteCursor cursor2 = database.queryFinalized(String.format(Locale.US, "SELECT COUNT(mid) FROM messages_v2 WHERE uid = %d AND mid > %d AND mid <= %d AND out = 0", dialogId, oldMaxId, currentMaxId));
+                            if (cursor2.next()) {
+                                updatedCount = cursor2.intValue(0);
+                            }
+                            cursor2.dispose();
+                        } else {
+                            cursor = database.queryFinalized("SELECT changes()");
+                            if (cursor.next()) {
+                                updatedCount = cursor.intValue(0) + scheduledCount;
+                            }
+                            cursor.dispose();
+                            cursor = null;
                         }
-                        cursor.dispose();
                         unreadCount = Math.max(0, unreadCount - updatedCount);
                     }
 
