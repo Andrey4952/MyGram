@@ -148,6 +148,8 @@ public class ColoredImageSpan extends ReplacementSpan {
             }
         }
 
+
+
         canvas.save();
         int transY = bottom - (drawable != null ? drawable.getBounds().bottom : bottom);
         if (verticalAlignment == ALIGN_BASELINE) {
