@@ -40303,8 +40303,9 @@ public class ChatActivity extends BaseFragment implements
 
         @Override
         public void didLongPress(ChatMessageCell cell, float x, float y) {
-            createMenu(cell, false, false, x, y, false);
-            startMultiselect(chatListView.getChildAdapterPosition(cell));
+            if (!createMenu(cell, true, false, x, y, false)) {
+                startMultiselect(chatListView.getChildAdapterPosition(cell));
+            }
         }
 
         @Override
@@ -45473,16 +45474,7 @@ public class ChatActivity extends BaseFragment implements
                     options.add(OPTION_EDIT);
                     icons.add(R.drawable.msg_edit);
                 }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("View edits");
-                    options.add(OPTION_VIEW_EDITS);
-                    icons.add(R.drawable.msg_edit);
-                }
-                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
-                    items.add("Read (ghost)");
-                    options.add(OPTION_READ_GHOST);
-                    icons.add(R.drawable.msg_seen);
-                }
+
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
                     items.add(LocaleController.getString(R.string.EditOfferAdd));
                     options.add(OPTION_SUGGESTION_ADD_OFFER);
@@ -45503,6 +45495,16 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Reply));
                     options.add(OPTION_REPLY);
                     icons.add(R.drawable.menu_reply);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("View edits");
+                    options.add(OPTION_VIEW_EDITS);
+                    icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("Read (ghost)");
+                    options.add(OPTION_READ_GHOST);
+                    icons.add(R.drawable.msg_seen);
                 }
             }
             if (selectedObject != null && selectedObject.messageOwner != null && currentUser != null && !UserObject.isService(currentUser.id) && (selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionStarGift || selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionStarGiftUnique || selectedObject.messageOwner.action instanceof TLRPC.TL_messageActionGiftPremium)) {
