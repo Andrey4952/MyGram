@@ -1693,7 +1693,7 @@ public class ChatActivity extends BaseFragment implements
                 }
                 processRowSelect(view, outside, x, y);
             }
-            if (!result && view instanceof ChatMessageCell && (((ChatMessageCell) view).getMessageObject() != null && ((ChatMessageCell) view).getMessageObject().type != MessageObject.TYPE_JOINED_CHANNEL)) {
+            if (view instanceof ChatMessageCell && (((ChatMessageCell) view).getMessageObject() != null && ((ChatMessageCell) view).getMessageObject().type != MessageObject.TYPE_JOINED_CHANNEL)) {
                 startMultiselect(position);
                 result = true;
             }
@@ -45473,6 +45473,16 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Edit));
                     options.add(OPTION_EDIT);
                     icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("View edits");
+                    options.add(OPTION_VIEW_EDITS);
+                    icons.add(R.drawable.msg_edit);
+                }
+                if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL) {
+                    items.add("Read (ghost)");
+                    options.add(OPTION_READ_GHOST);
+                    icons.add(R.drawable.msg_seen);
                 }
 
                 if (ChatObject.isMonoForum(currentChat) && selectedObject.getGroupId() == 0 && selectedObjectGroup == null && message != null && message.messageOwner != null && message.messageOwner.suggested_post == null && message.messageOwner.action == null) {
