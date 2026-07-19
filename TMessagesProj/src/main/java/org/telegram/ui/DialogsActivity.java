@@ -589,6 +589,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     @Nullable
     private ActionBarMenuSubItem readItem;
     @Nullable
+    private ActionBarMenuSubItem unreadItem;
+    @Nullable
     private ActionBarMenuSubItem blockItem;
 
     private float additionalFloatingTranslation;
@@ -710,6 +712,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
     private final static int add_to_folder = 109;
     private final static int remove_from_folder = 110;
     private final static int community_ungroup = 111;
+    private final static int unread = 112;
 
     private final static int ARCHIVE_ITEM_STATE_PINNED = 0;
     private final static int ARCHIVE_ITEM_STATE_SHOWED = 1;
@@ -4012,7 +4015,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                         undoView.showWithAction(did, UndoView.ACTION_REMOVED_FROM_FOLDER, neverShow.size(), filter, null, null);
                     }
                     hideActionMode(false);
-                } else if (id == pin || id == read || id == delete || id == clear || id == mute || id == archive || id == block || id == archive2 || id == pin2) {
+                } else if (id == pin || id == read || id == unread || id == delete || id == clear || id == mute || id == archive || id == block || id == archive2 || id == pin2) {
                     performSelectedDialogsAction(selectedDialogs, id, true, false);
                 }
             }
@@ -6751,6 +6754,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         addToFolderItem = otherItem.addSubItem(add_to_folder, R.drawable.msg_addfolder, LocaleController.getString(R.string.FilterAddTo));
         removeFromFolderItem = otherItem.addSubItem(remove_from_folder, R.drawable.msg_removefolder, LocaleController.getString(R.string.FilterRemoveFrom));
         readItem = otherItem.addSubItem(read, R.drawable.msg_markread, LocaleController.getString(R.string.MarkAsRead));
+        unreadItem = otherItem.addSubItem(unread, R.drawable.msg_markunread, LocaleController.getString(R.string.MarkAsUnread));
         clearItem = otherItem.addSubItem(clear, R.drawable.msg_clear, LocaleController.getString(R.string.ClearHistory));
         blockItem = otherItem.addSubItem(block, R.drawable.msg_block, LocaleController.getString(R.string.BlockUser));
 
@@ -8635,6 +8639,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
 
         if (!isCommunityCell) {
+            if (!cell.getHasUnread()) {
+                ActionBarMenuSubItem markAsReadItem = new ActionBarMenuSubItem(getParentActivity(), true, false);
+                markAsReadItem.setTextAndIcon(LocaleController.getString(R.string.MarkAsRead), R.drawable.msg_markread);
+                markAsReadItem.setMinimumWidth(160);
+                markAsReadItem.setOnClickListener(e -> {
+                    markAsRead(dialogId);
+                    finishPreviewFragment();
+                });
+                previewMenu[0].addView(markAsReadItem);
+            }
             ActionBarMenuSubItem markAsUnreadItem = new ActionBarMenuSubItem(getParentActivity(), true, false);
             if (cell.getHasUnread()) {
                 markAsUnreadItem.setTextAndIcon(LocaleController.getString(R.string.MarkAsRead), R.drawable.msg_markread);
@@ -9406,11 +9420,9 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     pinDialog(selectedDialog, false, filter, minPinnedNum, count == 1);
                 }
             } else if (action == read) {
-                if (canReadCount != 0) {
-                    markAsRead(selectedDialog);
-                } else {
-                    markAsUnread(selectedDialog);
-                }
+                markAsRead(selectedDialog);
+            } else if (action == unread) {
+                markAsUnread(selectedDialog);
             } else if (action == delete || action == clear) {
                 if (count == 1) {
                     if (action == delete && canDeletePsaSelected) {
@@ -9574,7 +9586,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
 
         getMessagesController().markMentionsAsRead(did, 0);
-        getMessagesController().markDialogAsRead(did, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
+        getMessagesController().forceMarkDialogAsRead(did, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
 
         if (selectedDialogIndex >= 0) {
             frozenDialogsList.remove(selectedDialogIndex);
@@ -9600,7 +9612,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 getMessagesController().markAllTopicsAsRead(did);
             }
             getMessagesController().markMentionsAsRead(did, 0);
-            getMessagesController().markDialogAsRead(did, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
+            getMessagesController().forceMarkDialogAsRead(did, dialog.top_message, dialog.top_message, dialog.last_message_date, false, 0, 0, true, 0);
         }
         if (selectedDialogIndex >= 0) {
             frozenDialogsList.remove(selectedDialogIndex);
@@ -9962,16 +9974,13 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             }
         }
         if (readItem != null) {
-            if (canReadCount != 0) {
-                readItem.setTextAndIcon(LocaleController.getString(R.string.MarkAsRead), R.drawable.msg_markread);
-                readItem.setVisibility(View.VISIBLE);
+            readItem.setVisibility(View.VISIBLE);
+        }
+        if (unreadItem != null) {
+            if (forumCount == 0 && communitiesCount == 0) {
+                unreadItem.setVisibility(View.VISIBLE);
             } else {
-                if (forumCount == 0 && communitiesCount == 0) {
-                    readItem.setTextAndIcon(LocaleController.getString(R.string.MarkAsUnread), R.drawable.msg_markunread);
-                    readItem.setVisibility(View.VISIBLE);
-                } else {
-                    readItem.setVisibility(View.GONE);
-                }
+                unreadItem.setVisibility(View.GONE);
             }
         }
         if (pinItem != null && pin2Item != null) {
