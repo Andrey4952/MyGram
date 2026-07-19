@@ -9418,31 +9418,21 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, false, ChatActivity.MODE_QUICK_REPLIES, topicId);
             } else {
-                if (shouldKeepDeleted(dialogId)) {
-                    ArrayList<Integer> keptIds = new ArrayList<>();
-                    for (int i = 0; i < messages.size(); i++) keptIds.add(messages.get(i));
-                    getMessagesStorage().markMessagesAsDeletedButKept(dialogId, keptIds);
-                    markMessagesAsDeletedButKeptInMemory(dialogId, keptIds);
-                }
-                if (!shouldKeepDeleted(dialogId)) {
-                    if (channelId == 0) {
-                        for (int a = 0; a < messages.size(); a++) {
-                            Integer id = messages.get(a);
-                            MessageObject obj = dialogMessagesByIds.get(id);
-                            if (obj != null) {
-                                obj.deleted = true;
-                            }
+                if (channelId == 0) {
+                    for (int a = 0; a < messages.size(); a++) {
+                        Integer id = messages.get(a);
+                        MessageObject obj = dialogMessagesByIds.get(id);
+                        if (obj != null) {
+                            obj.deleted = true;
                         }
-                    } else {
-                        markDialogMessageAsDeleted(dialogId, messages);
                     }
-                    getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, forAll, 0, topicId);
-                    getMessagesStorage().updateDialogsWithDeletedMessages(dialogId, channelId, messages, null);
+                } else {
+                    markDialogMessageAsDeleted(dialogId, messages);
                 }
+                getMessagesStorage().markMessagesAsDeleted(dialogId, messages, true, forAll, 0, topicId);
+                getMessagesStorage().updateDialogsWithDeletedMessages(dialogId, channelId, messages, null);
             }
-            if (!shouldKeepDeleted(dialogId) || scheduled || quickReplies) {
-                getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, messages, channelId, scheduled, false, movedToScheduled, movedToScheduledMessageId);
-            }
+            getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, messages, channelId, scheduled, false, movedToScheduled, movedToScheduledMessageId);
         } else {
             if (taskRequest instanceof TLRPC.TL_channels_deleteMessages) {
                 channelId = ((TLRPC.TL_channels_deleteMessages) taskRequest).channel.channel_id;
