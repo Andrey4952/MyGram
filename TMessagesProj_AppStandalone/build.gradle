@@ -88,6 +88,9 @@ android {
     sourceSets.standalone {
         manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
     }
+    sourceSets.release {
+        manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
+    }
 
     flavorDimensions "minApi"
 
@@ -100,6 +103,9 @@ android {
                 abiVersionCode = 9
             }
             sourceSets.standalone {
+                manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
+            }
+            sourceSets.release {
                 manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
             }
         }
