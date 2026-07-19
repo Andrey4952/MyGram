@@ -2920,6 +2920,7 @@ public class ChatActivity extends BaseFragment implements
             .add(NotificationCenter.voiceTranscriptionUpdate)
             .add(NotificationCenter.animatedEmojiDocumentLoaded)
             .add(NotificationCenter.replaceMessagesObjects)
+            .add(NotificationCenter.messagesDeletedButKept)
             .add(NotificationCenter.notificationsSettingsUpdated)
             .add(NotificationCenter.replyMessagesDidLoad)
             .add(NotificationCenter.didReceivedWebpages)
@@ -23193,6 +23194,38 @@ public class ChatActivity extends BaseFragment implements
             doOnIdle(() -> {
                 replaceMessageObjects(messageObjects, loadIndex, false);
             });
+        } else if (id == NotificationCenter.messagesDeletedButKept) {
+            long did = (Long) args[0];
+            if (did == dialog_id || did == mergeDialogId) {
+                ArrayList<Integer> keptIds = (ArrayList<Integer>) args[1];
+                if (keptIds != null) {
+                    doOnIdle(() -> {
+                        for (int a = 0; a < keptIds.size(); a++) {
+                            int msgId = keptIds.get(a);
+                            for (int loadIndex = 0; loadIndex < 2; loadIndex++) {
+                                MessageObject msg = messagesDict[loadIndex].get(msgId);
+                                if (msg != null && msg.messageOwner != null) {
+                                    if (!msg.messageOwner.deletedButKept) {
+                                        msg.messageOwner.deletedButKept = true;
+                                        final ArrayList<MessageObject> messagesList;
+                                        if (chatAdapter.isFrozen) {
+                                            messagesList = chatAdapter.frozenMessages;
+                                        } else if (chatAdapter.isFiltered) {
+                                            messagesList = chatAdapter.filteredMessages;
+                                        } else {
+                                            messagesList = ChatActivity.this.messages;
+                                        }
+                                        int index = messagesList.indexOf(msg);
+                                        if (index >= 0 && index < messagesList.size() && chatAdapter != null) {
+                                            chatAdapter.updateRowAtPosition(index + chatAdapter.messagesStartRow);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
         } else if (id == NotificationCenter.notificationsSettingsUpdated) {
             updateTitleIcons();
             if (ChatObject.isChannel(currentChat) || UserObject.isReplyUser(currentUser) || currentUser != null && currentUser.id == UserObject.VERIFY) {

@@ -9326,32 +9326,63 @@ public class MessagesController extends BaseController implements NotificationCe
         return org.telegram.messenger.SharedConfig.keepDeleted;
     }
 
-    public void markMessagesAsDeletedButKeptInMemory(long dialogId, ArrayList<Integer> keptIds) {
-        if (keptIds == null) {
+    public void markMessagesAsDeletedButKeptInMemory(LongSparseArray<ArrayList<Integer>> keptIdsByDialog) {
+        if (keptIdsByDialog == null) {
             return;
         }
-        for (int i = 0; i < keptIds.size(); i++) {
-            int id = keptIds.get(i);
-            MessageObject obj = dialogMessagesByIds.get(id);
-            if (obj != null && obj.messageOwner != null) {
-                obj.messageOwner.deletedButKept = true;
+        LongSparseArray<ArrayList<MessageObject>> updatedObjectsByDialog = new LongSparseArray<>();
+        for (int a = 0; a < keptIdsByDialog.size(); a++) {
+            long actualDialogId = keptIdsByDialog.keyAt(a);
+            ArrayList<Integer> keptIds = keptIdsByDialog.valueAt(a);
+            if (keptIds == null) {
+                continue;
             }
-        }
-        ArrayList<MessageObject> objs = dialogMessage.get(dialogId);
-        if (objs != null) {
-            for (int i = 0; i < objs.size(); ++i) {
-                MessageObject obj = objs.get(i);
+            for (int i = 0; i < keptIds.size(); i++) {
+                int id = keptIds.get(i);
+                MessageObject obj = dialogMessagesByIds.get(id);
                 if (obj != null && obj.messageOwner != null) {
-                    for (int b = 0; b < keptIds.size(); b++) {
-                        if (obj.getId() == keptIds.get(b)) {
-                            obj.messageOwner.deletedButKept = true;
-                            break;
+                    obj.messageOwner.deletedButKept = true;
+                    ArrayList<MessageObject> list = updatedObjectsByDialog.get(actualDialogId);
+                    if (list == null) {
+                        list = new ArrayList<>();
+                        updatedObjectsByDialog.put(actualDialogId, list);
+                    }
+                    if (!list.contains(obj)) {
+                        list.add(obj);
+                    }
+                }
+                if (actualDialogId != 0) {
+                    ArrayList<MessageObject> objs = dialogMessage.get(actualDialogId);
+                    if (objs != null) {
+                        for (int j = 0; j < objs.size(); ++j) {
+                            MessageObject o = objs.get(j);
+                            if (o != null && o.getId() == id && o.messageOwner != null) {
+                                o.messageOwner.deletedButKept = true;
+                                ArrayList<MessageObject> list = updatedObjectsByDialog.get(actualDialogId);
+                                if (list == null) {
+                                    list = new ArrayList<>();
+                                    updatedObjectsByDialog.put(actualDialogId, list);
+                                }
+                                if (!list.contains(o)) {
+                                    list.add(o);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
         AndroidUtilities.runOnUIThread(() -> {
+            for (int a = 0; a < updatedObjectsByDialog.size(); a++) {
+                long did = updatedObjectsByDialog.keyAt(a);
+                ArrayList<MessageObject> list = updatedObjectsByDialog.valueAt(a);
+                getNotificationCenter().postNotificationName(NotificationCenter.replaceMessagesObjects, did, list);
+            }
+            for (int a = 0; a < keptIdsByDialog.size(); a++) {
+                long did = keptIdsByDialog.keyAt(a);
+                ArrayList<Integer> keptIds = keptIdsByDialog.valueAt(a);
+                getNotificationCenter().postNotificationName(NotificationCenter.messagesDeletedButKept, did, keptIds);
+            }
             getNotificationCenter().postNotificationName(NotificationCenter.updateInterfaces, UPDATE_MASK_CHAT);
         });
     }
@@ -17631,7 +17662,6 @@ public class MessagesController extends BaseController implements NotificationCe
     protected void deleteMessagesByPush(long dialogId, ArrayList<Integer> ids, long channelId) {
         if (shouldKeepDeleted(dialogId)) {
             getMessagesStorage().markMessagesAsDeletedButKept(dialogId, ids);
-            markMessagesAsDeletedButKeptInMemory(dialogId, ids);
             return;
         }
         getMessagesStorage().getStorageQueue().postRunnable(() -> {
@@ -21175,7 +21205,6 @@ public class MessagesController extends BaseController implements NotificationCe
                             ArrayList<Integer> keptIds = new ArrayList<>();
                             for (int i = 0; i < arrayList.size(); i++) keptIds.add(arrayList.get(i));
                             getMessagesStorage().markMessagesAsDeletedButKept(dialogId, keptIds);
-                            markMessagesAsDeletedButKeptInMemory(dialogId, keptIds);
                         }
                         continue;
                     }

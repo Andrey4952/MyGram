@@ -5677,13 +5677,29 @@ public class MessagesStorage extends BaseController {
         storageQueue.postRunnable(() -> {
             SQLitePreparedStatement state = null;
             SQLitePreparedStatement stateTopics = null;
+            LongSparseArray<ArrayList<Integer>> actualKeptIdsByDialog = new LongSparseArray<>();
             try {
                 database.beginTransaction();
                 state = database.executeFast("UPDATE messages_v2 SET custom_params = ? WHERE mid = ? AND uid = ?");
                 stateTopics = database.executeFast("UPDATE messages_topics SET custom_params = ? WHERE mid = ? AND uid = ?");
                 for (int a = 0; a < messages.size(); a++) {
                     int messageId = messages.get(a);
-                    TLRPC.Message message = getMessageWithCustomParamsOnlyInternal(messageId, dialogId);
+                    long actualDialogId = dialogId;
+                    if (actualDialogId == 0) {
+                        SQLiteCursor cursor = database.queryFinalized("SELECT uid FROM messages_v2 WHERE mid = ?", messageId);
+                        if (cursor.next()) {
+                            actualDialogId = cursor.longValue(0);
+                        }
+                        cursor.dispose();
+                    }
+                    if (actualDialogId == 0) {
+                        SQLiteCursor cursor = database.queryFinalized("SELECT uid FROM messages_topics WHERE mid = ?", messageId);
+                        if (cursor.next()) {
+                            actualDialogId = cursor.longValue(0);
+                        }
+                        cursor.dispose();
+                    }
+                    TLRPC.Message message = getMessageWithCustomParamsOnlyInternal(messageId, actualDialogId);
                     if (message != null) {
                         message.deletedButKept = true;
                         NativeByteBuffer nativeByteBuffer = MessageCustomParamsHelper.writeLocalParams(message);
@@ -5695,7 +5711,7 @@ public class MessagesStorage extends BaseController {
                             state.bindNull(1);
                         }
                         state.bindInteger(2, messageId);
-                        state.bindLong(3, dialogId);
+                        state.bindLong(3, actualDialogId);
                         state.step();
 
                         stateTopics.requery();
@@ -5705,15 +5721,27 @@ public class MessagesStorage extends BaseController {
                             stateTopics.bindNull(1);
                         }
                         stateTopics.bindInteger(2, messageId);
-                        stateTopics.bindLong(3, dialogId);
+                        stateTopics.bindLong(3, actualDialogId);
                         stateTopics.step();
 
                         if (nativeByteBuffer != null) {
                             nativeByteBuffer.reuse();
                         }
                     }
+                    if (actualDialogId != 0) {
+                        ArrayList<Integer> list = actualKeptIdsByDialog.get(actualDialogId);
+                        if (list == null) {
+                            list = new ArrayList<>();
+                            actualKeptIdsByDialog.put(actualDialogId, list);
+                        }
+                        list.add(messageId);
+                    }
                 }
                 database.commitTransaction();
+                final LongSparseArray<ArrayList<Integer>> actualKeptIdsByDialogFinal = actualKeptIdsByDialog;
+                AndroidUtilities.runOnUIThread(() -> {
+                    MessagesController.getInstance(currentAccount).markMessagesAsDeletedButKeptInMemory(actualKeptIdsByDialogFinal);
+                });
             } catch (Exception e) {
                 checkSQLException(e);
             } finally {

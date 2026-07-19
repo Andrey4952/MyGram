@@ -275,6 +275,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     public ExpiredStoryView expiredStoryView;
     private boolean skipFrameUpdate;
 
+    private boolean wasDeletedButKept;
     public ChannelRecommendationsCell channelRecommendationsCell;
     private final PostRunnableHolder postRunnableHolder = new PostRunnableHolder();
 
@@ -6742,7 +6743,8 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 lastPostAuthor != messageObject.messageOwner.post_author ||
                 wasPinned != isPinned ||
                 newReply != lastReplyMessage ||
-                messageObject.translated != lastTranslated;
+                messageObject.translated != lastTranslated ||
+                (currentMessageObject != null && currentMessageObject.isDeletedButKept() != wasDeletedButKept);
         boolean groupChanged = groupedMessages != currentMessagesGroup;
         boolean pollChanged = false;
 
@@ -6843,6 +6845,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                 currentMessageObject.richLayout.detach(this);
             }
             currentMessageObject = messageObject;
+            wasDeletedButKept = messageObject.isDeletedButKept();
             currentMessagesGroup = groupedMessages;
             wasAllChats = isAllChats;
             lastTime = -2;
@@ -18457,6 +18460,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             android.util.Log.d("ANTIGRAVITY", "setMessageContent: message is deleted but kept! id=" + currentMessageObject.getId() + " showKeptDeleted=" + SharedConfig.showKeptDeleted);
         }
         if (currentMessageObject.isDeletedButKept() && SharedConfig.showKeptDeleted) {
+            android.util.Log.d("ANTIGRAVITY", "ChatMessageCell setMessageContent: id=" + currentMessageObject.getId() + " type=" + currentMessageObject.type + " isDeletedButKept=" + currentMessageObject.isDeletedButKept());
             SpannableStringBuilder ssb = new SpannableStringBuilder("   ");
             ColoredImageSpan span = new ColoredImageSpan(R.drawable.msg_delete, ColoredImageSpan.ALIGN_CENTER);
             span.setScale(0.7f, 0.7f);
@@ -23724,7 +23728,30 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     }
 
     private void drawTimeInternal(Canvas canvas, float alpha, boolean fromParent, float timeX, StaticLayout timeLayout, float timeWidth, boolean drawSelectionBackground) {
-        if ((!drawTime || groupPhotoInvisible) && shouldDrawTimeOnMedia() || timeLayout == null || (currentMessageObject.deleted && currentPosition != null) || currentMessageObject.type == MessageObject.TYPE_PHONE_CALL) {
+
+        if (timeLayout != null && timeLayout.getText() instanceof Spanned) {
+            Spanned spanned = (Spanned) timeLayout.getText();
+            ColoredImageSpan[] spans = spanned.getSpans(0, spanned.length(), ColoredImageSpan.class);
+            if (spans != null) {
+                for (int i = 0; i < spans.length; i++) {
+                    ColoredImageSpan span = spans[i];
+                    if (shouldDrawTimeOnMedia()) {
+                        if (currentMessageObject.shouldDrawWithoutBackground()) {
+                            span.setColorKey(Theme.key_chat_serviceText);
+                        } else {
+                            span.setColorKey(Theme.key_chat_mediaTimeText);
+                        }
+                    } else {
+                        if (currentMessageObject.isOutOwner()) {
+                            span.setColorKey(drawSelectionBackground ? Theme.key_chat_outTimeSelectedText : Theme.key_chat_outTimeText);
+                        } else {
+                            span.setColorKey(drawSelectionBackground ? Theme.key_chat_inTimeSelectedText : Theme.key_chat_inTimeText);
+                        }
+                    }
+                }
+            }
+        }
+        if ((!drawTime || groupPhotoInvisible) && shouldDrawTimeOnMedia() || timeLayout == null || (currentMessageObject.deleted && !currentMessageObject.isDeletedButKept() && currentPosition != null) || currentMessageObject.type == MessageObject.TYPE_PHONE_CALL) {
             return;
         }
         if (timeLayout.getPaint() != Theme.chat_timePaint) {
