@@ -1084,4 +1084,19 @@
     <string name="RemindDayAt">\'Herinner op\' d MMM \'om\' HH:mm</string>
     <string name="RemindDayYearAt">\'Herinner op\' d MMM yyyy \'om\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">Fork-instellingen</string>
+    <string name="ForkSettingsInfo">Spookmodus, verwijderde behouden, advertenties blokkeren</string>
+    <string name="ForkSettingsTitle">Fork-instellingen</string>
+    <string name="ForkPrivacy">Privacy</string>
+    <string name="ForkGhostMode">Spookmodus</string>
+    <string name="ForkGhostModeDesc">Voorkomt het verzenden van de typstatus en het markeren van berichten als gelezen.</string>
+    <string name="ForkKeepDeleted">Verwijderde berichten behouden</string>
+    <string name="ForkKeepDeletedDesc">Voorkomt verwijdering van berichten door andere gebruikers.</string>
+    <string name="ForkKeepDeletedBots">Verwijderde berichten in bots behouden</string>
+    <string name="ForkKeepDeletedBotsDesc">Voorkomt verwijdering van berichten in bots.</string>
+    <string name="ForkShowKeptDeleted">Bewaarde verwijderde berichten tonen</string>
+    <string name="ForkShowKeptDeletedDesc">Toont een visuele markering op verwijderde berichten.</string>
+    <string name="ForkReadGhost">Lezen (spook)</string>
+    <string name="ForkViewEdits">Bewerkingen bekijken</string>
 </resources>

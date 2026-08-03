@@ -263,4 +263,19 @@
     <string name="RemindTodayAt">\'Отправить сегодня в\' HH:mm</string>
     <string name="RemindDayAt">\'Отправить\' d MMM \'в\' HH:mm</string>
     <string name="RemindDayYearAt">\'Напомнить\' d MMM yyyy \'в\' HH:mm</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">Настройки форка</string>
+    <string name="ForkSettingsInfo">Призрачный режим, сохранение удалённых, блокировка рекламы</string>
+    <string name="ForkSettingsTitle">Настройки форка</string>
+    <string name="ForkPrivacy">Приватность</string>
+    <string name="ForkGhostMode">Призрачный режим</string>
+    <string name="ForkGhostModeDesc">Запрещает отправку статуса «печатает» и пометку сообщений как прочитанные.</string>
+    <string name="ForkKeepDeleted">Сохранять удалённые сообщения</string>
+    <string name="ForkKeepDeletedDesc">Запрещает удаление сообщений другими пользователями.</string>
+    <string name="ForkKeepDeletedBots">Сохранять удалённые сообщения в ботах</string>
+    <string name="ForkKeepDeletedBotsDesc">Запрещает удаление сообщений в ботах.</string>
+    <string name="ForkShowKeptDeleted">Показывать сохранённые удалённые сообщения</string>
+    <string name="ForkShowKeptDeletedDesc">Отображает визуальную подсветку для удалённых сообщений.</string>
+    <string name="ForkReadGhost">Прочитать (призрак)</string>
+    <string name="ForkViewEdits">Показать правки</string>
 </resources>

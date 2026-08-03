@@ -1243,4 +1243,19 @@
     <string name="RemindTodayAt">\'ذكّرني اليوم عند\' HH:mm</string>
     <string name="RemindDayAt">\'ذكّرني بتاريخ\' d MMM \'عند\' HH:mm</string>
     <string name="RemindDayYearAt">\'ذكّرني بتاريخ\' d MMM yyyy \'عند\' HH:mm</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">إعدادات الفورك</string>
+    <string name="ForkSettingsInfo">وضع الشبح، حفظ المحذوفة، حظر الإعلانات</string>
+    <string name="ForkSettingsTitle">إعدادات الفورك</string>
+    <string name="ForkPrivacy">الخصوصية</string>
+    <string name="ForkGhostMode">وضع الشبح</string>
+    <string name="ForkGhostModeDesc">يمنع إرسال حالة الكتابة ووضع علامة مقروء على الرسائل.</string>
+    <string name="ForkKeepDeleted">الاحتفاظ بالرسائل المحذوفة</string>
+    <string name="ForkKeepDeletedDesc">يمنع حذف الرسائل من قبل المستخدمين الآخرين.</string>
+    <string name="ForkKeepDeletedBots">الاحتفاظ بالرسائل المحذوفة في البوتات</string>
+    <string name="ForkKeepDeletedBotsDesc">يمنع حذف الرسائل في البوتات.</string>
+    <string name="ForkShowKeptDeleted">إظهار الرسائل المحذوفة المحتفظ بها</string>
+    <string name="ForkShowKeptDeletedDesc">يعرض تمييزاً مرئياً على الرسائل المحذوفة.</string>
+    <string name="ForkReadGhost">قراءة (شبح)</string>
+    <string name="ForkViewEdits">عرض التعديلات</string>
 </resources>

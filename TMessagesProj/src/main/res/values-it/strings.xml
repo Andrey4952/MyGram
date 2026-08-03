@@ -1537,4 +1537,19 @@
     <string name="RemindDayAt">\'Ricorda il\' d MMM \'alle\' HH:mm</string>
     <string name="RemindDayYearAt">\'Ricorda il\' d MMM yyyy \'alle\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">Impostazioni fork</string>
+    <string name="ForkSettingsInfo">Modalità fantasma, mantieni eliminati, blocca annunci</string>
+    <string name="ForkSettingsTitle">Impostazioni fork</string>
+    <string name="ForkPrivacy">Privacy</string>
+    <string name="ForkGhostMode">Modalità fantasma</string>
+    <string name="ForkGhostModeDesc">Impedisce l\'invio dello stato di scrittura e la marcatura dei messaggi come letti.</string>
+    <string name="ForkKeepDeleted">Mantieni messaggi eliminati</string>
+    <string name="ForkKeepDeletedDesc">Impedisce l\'eliminazione dei messaggi da parte di altri utenti.</string>
+    <string name="ForkKeepDeletedBots">Mantieni messaggi eliminati nei bot</string>
+    <string name="ForkKeepDeletedBotsDesc">Impedisce l\'eliminazione dei messaggi nei bot.</string>
+    <string name="ForkShowKeptDeleted">Mostra messaggi eliminati conservati</string>
+    <string name="ForkShowKeptDeletedDesc">Mostra un evidenziazione visiva sui messaggi eliminati.</string>
+    <string name="ForkReadGhost">Leggi (fantasma)</string>
+    <string name="ForkViewEdits">Visualizza modifiche</string>
 </resources>
