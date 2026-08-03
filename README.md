@@ -12,11 +12,10 @@ This is a modified fork of [Telegram App for Android](https://github.com/DrKLO/T
 
 The fork settings entry point is in the main Settings screen:
 
-![Fork Settings in Settings menu](screenshots/fork-settings-entry.png)
+![Fork Settings in Settings menu](screenshots/settings-entry-fork.png)
 
 All options with toggle controls:
 
-![Fork Settings screen — all options](screenshots/fork-settings-top.png)
 ![Fork Settings screen — toggle states](screenshots/fork-settings-toggles.png)
 
 ---
@@ -27,7 +26,7 @@ All options with toggle controls:
 
 **Keep Deleted Messages** — Prevents deletion of messages by other users. When someone deletes a message, it's preserved on your device and shown with a trash icon:
 
-![Deleted message kept](screenshots/fork-settings-ghost.png)
+![Deleted message kept](screenshots/deleted-message.png)
 
 **Keep Deleted Messages in Bots** — Same protection for bot chats.
 
@@ -42,7 +41,9 @@ Long-press any message to open the context menu:
 - **Read (ghost)** — Mark the message as read for yourself without sending a read receipt to the sender
 - **View edits** — See the full edit history (original text and all subsequent versions) when a message has been edited
 
-![Message context menu with Read (ghost) and View edits](screenshots/fork-read-ghost.png)
+Long-press a message that has been edited and select **View edits**:
+
+![Edit History screen](screenshots/edit-history-screen.png)
 
 ---
 
