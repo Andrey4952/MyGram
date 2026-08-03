@@ -10,32 +10,30 @@ This is a modified fork of [Telegram App for Android](https://github.com/DrKLO/T
 
 **Ghost Mode** — Prevents sending typing status and marking messages as read. Other users won't see when you're typing, and your read receipts are suppressed.
 
-![Fork Settings — Ghost Mode](screenshots/fork-settings-ghost.png)
+**Keep Deleted Messages** — Prevents deletion of messages by other users. When someone deletes a message in a chat, the message is preserved on your device and shown as "Deleted message" with a trash icon.
 
-**Keep Deleted Messages** — Prevents deletion of messages by other users. When someone deletes a message in a chat you're in, the message is preserved on your device.
+![Deleted message visual highlight](screenshots/fork-settings-ghost.png)
 
 **Keep Deleted Messages in Bots** — Same protection as above, but for messages in bot chats.
 
 **Show Kept Deleted Messages** — Displays a visual highlight on deleted messages that were kept, so you can easily identify which messages were deleted by the other party.
 
-![Fork Settings — Full view](screenshots/fork-settings-top.png)
-
 ### 📖 Read (Ghost)
 
-Long-press any incoming message and select **Read (ghost)** to mark it as read on your side without sending a read receipt to the sender. The message stays unread for the other party.
+Long-press any incoming message and select **Read (ghost)** to mark it as read on your side without sending a read receipt to the sender. Use **View edits** to see the full edit history.
 
-![Read (ghost) context menu](screenshots/fork-read-ghost.png)
+![Message context menu — Read (ghost) and View edits](screenshots/fork-read-ghost.png)
 
 ### ✏️ Edit History
 
-Long-press a message that has been edited by the sender and select **View edits** to see the full edit history of that message. The original text and all subsequent versions are preserved and accessible.
+Long-press a message that has been edited and select **View edits** to see the full edit history of that message — original text and all subsequent versions preserved.
 
 ### 🚫 Ad-Free Experience
 
-All advertising is completely removed from Telegram in this fork:
+All advertising is completely removed from Telegram:
 
 - **Sponsored messages** in channels — disabled
-- **Video ad bulletins** that appear during video playback in the media viewer — disabled
+- **Video ad bulletins** during video playback — disabled
 - **Sponsored message info overlays** — removed
 
 No ads, no sponsored content, nothing interrupting your messaging or media viewing.
@@ -57,9 +55,15 @@ All fork-specific UI strings are fully translated into all 10 built-in languages
 | 한국어 | ✅ |
 | Português (Brasil) | ✅ |
 
-The fork settings entry point is available in the main Settings screen:
+The fork settings are available in the main Settings screen:
 
 ![Fork Settings entry in Settings](screenshots/fork-settings-entry.png)
+
+### ⚙️ All Fork Settings
+
+The full list of available options:
+
+![Fork Settings — all options](screenshots/fork-settings-top.png)
 
 ---
 
