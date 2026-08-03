@@ -276,4 +276,19 @@
     <string name="RemindTodayAt">\'Нагадати сьогодні,\' HH:mm</string>
     <string name="RemindDayAt">\'Нагадати\' d MMM\',\' HH:mm</string>
     <string name="RemindDayYearAt">\'Нагадати\' d MMM yyyy\',\' HH:mm</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">Налаштування форку</string>
+    <string name="ForkSettingsInfo">Режим примари, збереження видалених, блокування реклами</string>
+    <string name="ForkSettingsTitle">Налаштування форку</string>
+    <string name="ForkPrivacy">Приватність</string>
+    <string name="ForkGhostMode">Режим примари</string>
+    <string name="ForkGhostModeDesc">Запобігає надсиланню статусу «друкує» та позначці повідомлень як прочитані.</string>
+    <string name="ForkKeepDeleted">Зберігати видалені повідомлення</string>
+    <string name="ForkKeepDeletedDesc">Запобігає видаленню повідомлень іншими користувачами.</string>
+    <string name="ForkKeepDeletedBots">Зберігати видалені повідомлення в ботах</string>
+    <string name="ForkKeepDeletedBotsDesc">Запобігає видаленню повідомлень у ботах.</string>
+    <string name="ForkShowKeptDeleted">Показувати збережені видалені повідомлення</string>
+    <string name="ForkShowKeptDeletedDesc">Відображає візуальну підсвітку для видалених повідомлень.</string>
+    <string name="ForkReadGhost">Прочитати (примара)</string>
+    <string name="ForkViewEdits">Показати правки</string>
 </resources>

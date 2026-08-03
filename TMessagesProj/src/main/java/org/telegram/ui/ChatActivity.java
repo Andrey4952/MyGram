@@ -45857,12 +45857,12 @@ public class ChatActivity extends BaseFragment implements
                     icons.add(R.drawable.msg_edit);
                 }
                 if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL && selectedObject.messageOwner != null && selectedObject.messageOwner.editHistory != null && !selectedObject.messageOwner.editHistory.isEmpty()) {
-                    items.add("View edits");
+                    items.add(LocaleController.getString(R.string.ForkViewEdits));
                     options.add(OPTION_VIEW_EDITS);
                     icons.add(R.drawable.msg_edit);
                 }
                 if (selectedObject != null && selectedObject.type != MessageObject.TYPE_POLL && !selectedObject.isOutOwner()) {
-                    items.add("Read (ghost)");
+                    items.add(LocaleController.getString(R.string.ForkReadGhost));
                     options.add(OPTION_READ_GHOST);
                     icons.add(R.drawable.msg_seen);
                 }

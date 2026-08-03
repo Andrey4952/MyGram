@@ -1136,4 +1136,19 @@
     <string name="RemindDayAt">MMM d HH:mm\'에 알리기\'</string>
     <string name="RemindDayYearAt">yyyy\'년\' M\'월\' d\'일\' HH:mm\'에 알림\'</string>
     <string name="BotsMenuTitle">메뉴</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">포크 설정</string>
+    <string name="ForkSettingsInfo">고스트 모드, 삭제된 메시지 보존, 광고 차단</string>
+    <string name="ForkSettingsTitle">포크 설정</string>
+    <string name="ForkPrivacy">개인정보 보호</string>
+    <string name="ForkGhostMode">고스트 모드</string>
+    <string name="ForkGhostModeDesc">타이핑 상태 전송 및 메시지 읽음 표시를 방지합니다.</string>
+    <string name="ForkKeepDeleted">삭제된 메시지 보존</string>
+    <string name="ForkKeepDeletedDesc">다른 사용자에 의한 메시지 삭제를 방지합니다.</string>
+    <string name="ForkKeepDeletedBots">봇에서 삭제된 메시지 보존</string>
+    <string name="ForkKeepDeletedBotsDesc">봇에서 메시지 삭제를 방지합니다.</string>
+    <string name="ForkShowKeptDeleted">보존된 삭제된 메시지 표시</string>
+    <string name="ForkShowKeptDeletedDesc">삭제된 메시지에 시각적 강조 표시를 표시합니다.</string>
+    <string name="ForkReadGhost">읽기 (고스트)</string>
+    <string name="ForkViewEdits">편집 내역 보기</string>
 </resources>

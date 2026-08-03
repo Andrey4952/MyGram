@@ -41,7 +41,7 @@ public class ForkSettingsActivity extends BaseFragment {
     public View createView(Context context) {
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setAllowOverlayTitle(true);
-        actionBar.setTitle("Fork Settings");
+        actionBar.setTitle(LocaleController.getString(R.string.ForkSettingsTitle));
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -111,18 +111,18 @@ public class ForkSettingsActivity extends BaseFragment {
         oldItems.addAll(items);
         items.clear();
 
-        items.add(new ItemInner(VIEW_TYPE_HEADER, 0, "Privacy"));
-        items.add(new ItemInner(VIEW_TYPE_CHECK, 1, "Ghost Mode"));
-        items.add(new ItemInner(VIEW_TYPE_SHADOW, 2, "Prevents sending typing status and marking messages as read."));
+        items.add(new ItemInner(VIEW_TYPE_HEADER, 0, LocaleController.getString(R.string.ForkPrivacy)));
+        items.add(new ItemInner(VIEW_TYPE_CHECK, 1, LocaleController.getString(R.string.ForkGhostMode)));
+        items.add(new ItemInner(VIEW_TYPE_SHADOW, 2, LocaleController.getString(R.string.ForkGhostModeDesc)));
 
-        items.add(new ItemInner(VIEW_TYPE_CHECK, 3, "Keep Deleted Messages"));
-        items.add(new ItemInner(VIEW_TYPE_SHADOW, 4, "Prevents deletion of messages by other users."));
+        items.add(new ItemInner(VIEW_TYPE_CHECK, 3, LocaleController.getString(R.string.ForkKeepDeleted)));
+        items.add(new ItemInner(VIEW_TYPE_SHADOW, 4, LocaleController.getString(R.string.ForkKeepDeletedDesc)));
 
-        items.add(new ItemInner(VIEW_TYPE_CHECK, 5, "Keep Deleted Messages in Bots"));
-        items.add(new ItemInner(VIEW_TYPE_SHADOW, 6, "Prevents deletion of messages in bots."));
+        items.add(new ItemInner(VIEW_TYPE_CHECK, 5, LocaleController.getString(R.string.ForkKeepDeletedBots)));
+        items.add(new ItemInner(VIEW_TYPE_SHADOW, 6, LocaleController.getString(R.string.ForkKeepDeletedBotsDesc)));
 
-        items.add(new ItemInner(VIEW_TYPE_CHECK, 7, "Show kept deleted messages"));
-        items.add(new ItemInner(VIEW_TYPE_SHADOW, 8, "Displays a visual highlight on deleted messages."));
+        items.add(new ItemInner(VIEW_TYPE_CHECK, 7, LocaleController.getString(R.string.ForkShowKeptDeleted)));
+        items.add(new ItemInner(VIEW_TYPE_SHADOW, 8, LocaleController.getString(R.string.ForkShowKeptDeletedDesc)));
 
         if (adapter == null) {
             return;

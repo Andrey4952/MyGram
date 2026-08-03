@@ -1375,4 +1375,19 @@
     <string name="RemindTodayAt">\'Heute um\' HH:mm \'erinnern\'</string>
     <string name="RemindDayAt">\'Am\' d MMM \'um\' HH:mm \'erinnern\'</string>
     <string name="RemindDayYearAt">\'Am\' d\'.\' MMM yyyy \'um\' HH:mm \'erinnern\'</string>
+    <!-- Fork Settings -->
+    <string name="ForkSettings">Fork-Einstellungen</string>
+    <string name="ForkSettingsInfo">Geistermodus, Gelöschte behalten, Werbung blockieren</string>
+    <string name="ForkSettingsTitle">Fork-Einstellungen</string>
+    <string name="ForkPrivacy">Datenschutz</string>
+    <string name="ForkGhostMode">Geistermodus</string>
+    <string name="ForkGhostModeDesc">Verhindert das Senden des Tippstatus und das Markieren von Nachrichten als gelesen.</string>
+    <string name="ForkKeepDeleted">Gelöschte Nachrichten behalten</string>
+    <string name="ForkKeepDeletedDesc">Verhindert das Löschen von Nachrichten durch andere Benutzer.</string>
+    <string name="ForkKeepDeletedBots">Gelöschte Nachrichten in Bots behalten</string>
+    <string name="ForkKeepDeletedBotsDesc">Verhindert das Löschen von Nachrichten in Bots.</string>
+    <string name="ForkShowKeptDeleted">Gelöschte Nachrichten anzeigen</string>
+    <string name="ForkShowKeptDeletedDesc">Zeigt eine visuelle Hervorhebung gelöschter Nachrichten.</string>
+    <string name="ForkReadGhost">Gelesen (Geist)</string>
+    <string name="ForkViewEdits">Bearbeitungen anzeigen</string>
 </resources>
