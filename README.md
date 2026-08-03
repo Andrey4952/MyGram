@@ -41,6 +41,8 @@ Long-press any message to open the context menu:
 - **Read (ghost)** — Mark the message as read for yourself without sending a read receipt to the sender
 - **View edits** — See the full edit history (original text and all subsequent versions) when a message has been edited
 
+![Message context menu — Read (ghost) and View edits](screenshots/context-menu.png)
+
 Long-press a message that has been edited and select **View edits**:
 
 ![Edit History screen](screenshots/edit-history-screen.png)
