@@ -61,9 +61,11 @@ The fork settings are available in the main Settings screen:
 
 ### ⚙️ All Fork Settings
 
-The full list of available options:
+The full list of available options with toggle controls:
 
 ![Fork Settings — all options](screenshots/fork-settings-top.png)
+
+![Fork Settings — toggles on/off](screenshots/fork-settings-toggles.png)
 
 ---
 
