@@ -11177,8 +11177,8 @@
     <string name="ForkEditHistory">Edit History</string>
     <string name="ForkNoEdits">No edits</string>
     <string name="ForkAbout">About</string>
-    <string name="ForkSourceCode">Source code ⭣</string>
+    <string name="ForkSourceCode">Source code</string>
     <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
-    <string name="ForkTelegramChannel">Telegram channel ⭣</string>
+    <string name="ForkTelegramChannel">Telegram channel</string>
     <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

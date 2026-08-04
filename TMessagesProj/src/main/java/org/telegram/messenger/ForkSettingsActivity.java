@@ -131,8 +131,8 @@ public class ForkSettingsActivity extends BaseFragment {
         items.add(new ItemInner(VIEW_TYPE_SHADOW, 8, LocaleController.getString(R.string.ForkShowKeptDeletedDesc)));
 
         items.add(new ItemInner(VIEW_TYPE_HEADER, 100, LocaleController.getString(R.string.ForkAbout)));
-        items.add(new ItemInner(VIEW_TYPE_LINK, 100, LocaleController.getString(R.string.ForkSourceCode)));
-        items.add(new ItemInner(VIEW_TYPE_LINK, 101, LocaleController.getString(R.string.ForkTelegramChannel)));
+        items.add(new ItemInner(VIEW_TYPE_LINK, 100, "─── " + LocaleController.getString(R.string.ForkSourceCode) + " ───"));
+        items.add(new ItemInner(VIEW_TYPE_LINK, 101, "─── " + LocaleController.getString(R.string.ForkTelegramChannel) + " ───"));
 
         if (adapter == null) {
             return;
