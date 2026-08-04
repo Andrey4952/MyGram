@@ -11170,8 +11170,8 @@
     <string name="ForkKeepDeletedDesc">Prevents deletion of messages by other users.</string>
     <string name="ForkKeepDeletedBots">Keep Deleted Messages in Bots</string>
     <string name="ForkKeepDeletedBotsDesc">Prevents deletion of messages in bots.</string>
-    <string name="ForkShowKeptDeleted">Show kept deleted messages</string>
-    <string name="ForkShowKeptDeletedDesc">Displays a visual highlight on deleted messages.</string>
+    <string name="ForkShowKeptDeleted">Show trash icon</string>
+    <string name="ForkShowKeptDeletedDesc">Replaces deleted messages with a trash icon. Turn off to hide the icon and just show the kept text.</string>
     <string name="ForkReadGhost">Read (ghost)</string>
     <string name="ForkViewEdits">View edits</string>
     <string name="ForkEditHistory">Edit History</string>
