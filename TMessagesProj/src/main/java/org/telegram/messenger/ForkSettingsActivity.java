@@ -3,7 +3,6 @@ package org.telegram.messenger;
 import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
@@ -222,7 +221,6 @@ public class ForkSettingsActivity extends BaseFragment {
                 TextInfoPrivacyCell cell = (TextInfoPrivacyCell) holder.itemView;
                 cell.setFixedSize(dp(48));
                 cell.setText(item.text);
-                cell.setTextColor(0xFF4D9C4D); // green link color
             }
         }
 
