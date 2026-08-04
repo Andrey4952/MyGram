@@ -1390,4 +1390,11 @@
     <string name="ForkShowKeptDeletedDesc">Zeigt eine visuelle Hervorhebung gelöschter Nachrichten.</string>
     <string name="ForkReadGhost">Gelesen (Geist)</string>
     <string name="ForkViewEdits">Bearbeitungen anzeigen</string>
+    <string name="ForkEditHistory">Bearbeitungsverlauf</string>
+    <string name="ForkNoEdits">Keine Bearbeitungen</string>
+    <string name="ForkAbout">Über</string>
+    <string name="ForkSourceCode">Quellcode</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">Telegram-Kanal</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

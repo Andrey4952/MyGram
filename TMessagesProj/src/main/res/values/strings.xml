@@ -11174,4 +11174,11 @@
     <string name="ForkShowKeptDeletedDesc">Displays a visual highlight on deleted messages.</string>
     <string name="ForkReadGhost">Read (ghost)</string>
     <string name="ForkViewEdits">View edits</string>
+    <string name="ForkEditHistory">Edit History</string>
+    <string name="ForkNoEdits">No edits</string>
+    <string name="ForkAbout">About</string>
+    <string name="ForkSourceCode">Source code</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">Telegram channel</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

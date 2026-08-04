@@ -3,6 +3,7 @@ package org.telegram.messenger;
 import static org.telegram.messenger.AndroidUtilities.dp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
+import org.telegram.messenger.browser.Browser;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.Theme;
@@ -96,6 +98,10 @@ public class ForkSettingsActivity extends BaseFragment {
                 ((TextCheckCell) view).setChecked(SharedConfig.showKeptDeleted);
                 SharedConfig.saveConfig();
                 NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateInterfaces, MessagesController.UPDATE_MASK_ALL);
+            } else if (item.id == 100) {
+                Browser.openUrl(getParentActivity(), Uri.parse(LocaleController.getString(R.string.ForkSourceCodeUrl)));
+            } else if (item.id == 101) {
+                Browser.openUrl(getParentActivity(), Uri.parse(LocaleController.getString(R.string.ForkTelegramChannelUrl)));
             }
         });
 
@@ -124,6 +130,10 @@ public class ForkSettingsActivity extends BaseFragment {
         items.add(new ItemInner(VIEW_TYPE_CHECK, 7, LocaleController.getString(R.string.ForkShowKeptDeleted)));
         items.add(new ItemInner(VIEW_TYPE_SHADOW, 8, LocaleController.getString(R.string.ForkShowKeptDeletedDesc)));
 
+        items.add(new ItemInner(VIEW_TYPE_HEADER, 100, LocaleController.getString(R.string.ForkAbout)));
+        items.add(new ItemInner(VIEW_TYPE_LINK, 100, LocaleController.getString(R.string.ForkSourceCode)));
+        items.add(new ItemInner(VIEW_TYPE_LINK, 101, LocaleController.getString(R.string.ForkTelegramChannel)));
+
         if (adapter == null) {
             return;
         }
@@ -138,6 +148,7 @@ public class ForkSettingsActivity extends BaseFragment {
     private final static int VIEW_TYPE_HEADER = 0;
     private final static int VIEW_TYPE_CHECK = 1;
     private final static int VIEW_TYPE_SHADOW = 2;
+    private final static int VIEW_TYPE_LINK = 3;
 
     private static class ItemInner extends AdapterWithDiffUtils.Item {
         public CharSequence text;
@@ -165,6 +176,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 view = new HeaderCell(getContext());
             } else if (viewType == VIEW_TYPE_CHECK) {
                 view = new TextCheckCell(getContext());
+            } else if (viewType == VIEW_TYPE_LINK) {
+                view = new TextInfoPrivacyCell(getContext());
             } else {
                 view = new TextInfoPrivacyCell(getContext());
             }
@@ -204,6 +217,10 @@ public class ForkSettingsActivity extends BaseFragment {
                     return;
                 }
                 cell.setTextAndCheck(item.text, checked, divider);
+            } else if (holder.getItemViewType() == VIEW_TYPE_LINK) {
+                TextInfoPrivacyCell cell = (TextInfoPrivacyCell) holder.itemView;
+                cell.setFixedSize(dp(48));
+                cell.setText(item.text);
             }
         }
 
@@ -214,7 +231,8 @@ public class ForkSettingsActivity extends BaseFragment {
 
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
-            return holder.getItemViewType() != VIEW_TYPE_SHADOW && holder.getItemViewType() != VIEW_TYPE_HEADER;
+            int t = holder.getItemViewType();
+            return t == VIEW_TYPE_CHECK || t == VIEW_TYPE_LINK;
         }
 
         @Override

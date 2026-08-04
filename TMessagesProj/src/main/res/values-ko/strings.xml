@@ -1151,4 +1151,11 @@
     <string name="ForkShowKeptDeletedDesc">삭제된 메시지에 시각적 강조 표시를 표시합니다.</string>
     <string name="ForkReadGhost">읽기 (고스트)</string>
     <string name="ForkViewEdits">편집 내역 보기</string>
+    <string name="ForkEditHistory">편집 기록</string>
+    <string name="ForkNoEdits">편집 없음</string>
+    <string name="ForkAbout">정보</string>
+    <string name="ForkSourceCode">소스 코드</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">텔레그램 채널</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

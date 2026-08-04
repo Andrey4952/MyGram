@@ -34167,10 +34167,10 @@ public class ChatActivity extends BaseFragment implements
         }
         java.util.ArrayList<String> editHistory = messageObject.messageOwner != null ? messageObject.messageOwner.editHistory : null;
         BottomSheet.Builder builder = new BottomSheet.Builder(getParentActivity(), false, themeDelegate);
-        builder.setTitle("Edit History");
+        builder.setTitle(LocaleController.getString(R.string.ForkEditHistory));
         builder.setTitleMultipleLines(true);
         if (editHistory == null || editHistory.isEmpty()) {
-            builder.setItems(new CharSequence[]{ "No edits" }, (dialog, which) -> dialog.dismiss());
+            builder.setItems(new CharSequence[]{ LocaleController.getString(R.string.ForkNoEdits) }, (dialog, which) -> dialog.dismiss());
         } else {
             CharSequence[] items = new CharSequence[editHistory.size()];
             for (int i = 0; i < editHistory.size(); i++) {
