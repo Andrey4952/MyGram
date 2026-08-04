@@ -291,4 +291,11 @@
     <string name="ForkShowKeptDeletedDesc">Відображає візуальну підсвітку для видалених повідомлень.</string>
     <string name="ForkReadGhost">Прочитати (примара)</string>
     <string name="ForkViewEdits">Показати правки</string>
+    <string name="ForkEditHistory">Історія правок</string>
+    <string name="ForkNoEdits">Немає правок</string>
+    <string name="ForkAbout">Про форк</string>
+    <string name="ForkSourceCode">Вихідний код</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">Канал у Telegram</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

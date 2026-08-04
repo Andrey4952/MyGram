@@ -1552,4 +1552,11 @@
     <string name="ForkShowKeptDeletedDesc">Mostra un evidenziazione visiva sui messaggi eliminati.</string>
     <string name="ForkReadGhost">Leggi (fantasma)</string>
     <string name="ForkViewEdits">Visualizza modifiche</string>
+    <string name="ForkEditHistory">Cronologia modifiche</string>
+    <string name="ForkNoEdits">Nessuna modifica</string>
+    <string name="ForkAbout">Informazioni</string>
+    <string name="ForkSourceCode">Codice sorgente</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">Canale Telegram</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

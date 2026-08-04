@@ -1099,4 +1099,11 @@
     <string name="ForkShowKeptDeletedDesc">Toont een visuele markering op verwijderde berichten.</string>
     <string name="ForkReadGhost">Lezen (spook)</string>
     <string name="ForkViewEdits">Bewerkingen bekijken</string>
+    <string name="ForkEditHistory">Bewerkingsgeschiedenis</string>
+    <string name="ForkNoEdits">Geen bewerkingen</string>
+    <string name="ForkAbout">Over</string>
+    <string name="ForkSourceCode">Broncode</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">Telegram-kanaal</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>

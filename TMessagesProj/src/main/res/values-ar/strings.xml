@@ -1258,4 +1258,11 @@
     <string name="ForkShowKeptDeletedDesc">يعرض تمييزاً مرئياً على الرسائل المحذوفة.</string>
     <string name="ForkReadGhost">قراءة (شبح)</string>
     <string name="ForkViewEdits">عرض التعديلات</string>
+    <string name="ForkEditHistory">سجل التعديلات</string>
+    <string name="ForkNoEdits">لا توجد تعديلات</string>
+    <string name="ForkAbout">حول</string>
+    <string name="ForkSourceCode">الكود البرمجي</string>
+    <string name="ForkSourceCodeUrl">https://github.com/Andrey4952/MyGram</string>
+    <string name="ForkTelegramChannel">قناة تيليجرام</string>
+    <string name="ForkTelegramChannelUrl">https://t.me/MyGram_mod</string>
 </resources>
