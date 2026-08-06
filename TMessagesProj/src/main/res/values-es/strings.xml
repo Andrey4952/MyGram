@@ -1327,8 +1327,8 @@
     <string name="ForkKeepDeletedDesc">Evita la eliminación de mensajes por parte de otros usuarios.</string>
     <string name="ForkKeepDeletedBots">Conservar mensajes eliminados en bots</string>
     <string name="ForkKeepDeletedBotsDesc">Evita la eliminación de mensajes en bots.</string>
-    <string name="ForkShowKeptDeleted">Mostrar mensajes eliminados conservados</string>
-    <string name="ForkShowKeptDeletedDesc">Muestra un resaltado visual en los mensajes eliminados.</string>
+    <string name="ForkShowKeptDeleted">Mostrar icono de papelera</string>
+    <string name="ForkShowKeptDeletedDesc">Reemplaza los mensajes eliminados con un icono de papelera. Desactívalo para ocultar el icono y mostrar solo el texto conservado.</string>
     <string name="ForkReadGhost">Leer (fantasma)</string>
     <string name="ForkViewEdits">Ver ediciones</string>
     <string name="ForkEditHistory">Historial de ediciones</string>

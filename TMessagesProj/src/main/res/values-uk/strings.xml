@@ -287,8 +287,8 @@
     <string name="ForkKeepDeletedDesc">Запобігає видаленню повідомлень іншими користувачами.</string>
     <string name="ForkKeepDeletedBots">Зберігати видалені повідомлення в ботах</string>
     <string name="ForkKeepDeletedBotsDesc">Запобігає видаленню повідомлень у ботах.</string>
-    <string name="ForkShowKeptDeleted">Показувати збережені видалені повідомлення</string>
-    <string name="ForkShowKeptDeletedDesc">Відображає візуальну підсвітку для видалених повідомлень.</string>
+    <string name="ForkShowKeptDeleted">Показувати значок кошика</string>
+    <string name="ForkShowKeptDeletedDesc">Замінює видалені повідомлення іконкою кошика. Вимкніть, щоб сховати іконку та залишити лише збережений текст.</string>
     <string name="ForkReadGhost">Прочитати (примара)</string>
     <string name="ForkViewEdits">Показати правки</string>
     <string name="ForkEditHistory">Історія правок</string>

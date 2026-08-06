@@ -1260,8 +1260,8 @@
     <string name="ForkKeepDeletedDesc">Impede a exclusão de mensagens por outros usuários.</string>
     <string name="ForkKeepDeletedBots">Manter mensagens excluídas em bots</string>
     <string name="ForkKeepDeletedBotsDesc">Impede a exclusão de mensagens em bots.</string>
-    <string name="ForkShowKeptDeleted">Mostrar mensagens excluídas mantidas</string>
-    <string name="ForkShowKeptDeletedDesc">Exibe um destaque visual nas mensagens excluídas.</string>
+    <string name="ForkShowKeptDeleted">Mostrar ícone de lixeira</string>
+    <string name="ForkShowKeptDeletedDesc">Substitui as mensagens excluídas por um ícone de lixeira. Desative para ocultar o ícone e mostrar apenas o texto mantido.</string>
     <string name="ForkReadGhost">Ler (fantasma)</string>
     <string name="ForkViewEdits">Ver edições</string>
     <string name="ForkEditHistory">Histórico de edições</string>

@@ -1548,8 +1548,8 @@
     <string name="ForkKeepDeletedDesc">Impedisce l\'eliminazione dei messaggi da parte di altri utenti.</string>
     <string name="ForkKeepDeletedBots">Mantieni messaggi eliminati nei bot</string>
     <string name="ForkKeepDeletedBotsDesc">Impedisce l\'eliminazione dei messaggi nei bot.</string>
-    <string name="ForkShowKeptDeleted">Mostra messaggi eliminati conservati</string>
-    <string name="ForkShowKeptDeletedDesc">Mostra un evidenziazione visiva sui messaggi eliminati.</string>
+    <string name="ForkShowKeptDeleted">Mostra icona cestino</string>
+    <string name="ForkShowKeptDeletedDesc">Sostituisce i messaggi eliminati con un\'icona cestino. Disattiva per nascondere l\'icona e mostrare solo il testo conservato.</string>
     <string name="ForkReadGhost">Leggi (fantasma)</string>
     <string name="ForkViewEdits">Visualizza modifiche</string>
     <string name="ForkEditHistory">Cronologia modifiche</string>

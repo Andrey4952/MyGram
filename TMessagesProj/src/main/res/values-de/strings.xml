@@ -1386,8 +1386,8 @@
     <string name="ForkKeepDeletedDesc">Verhindert das Löschen von Nachrichten durch andere Benutzer.</string>
     <string name="ForkKeepDeletedBots">Gelöschte Nachrichten in Bots behalten</string>
     <string name="ForkKeepDeletedBotsDesc">Verhindert das Löschen von Nachrichten in Bots.</string>
-    <string name="ForkShowKeptDeleted">Gelöschte Nachrichten anzeigen</string>
-    <string name="ForkShowKeptDeletedDesc">Zeigt eine visuelle Hervorhebung gelöschter Nachrichten.</string>
+    <string name="ForkShowKeptDeleted">Papierkorbsymbol anzeigen</string>
+    <string name="ForkShowKeptDeletedDesc">Ersetzt gelöschte Nachrichten durch ein Papierkorbsymbol. Ausschalten, um das Symbol auszublenden und nur den erhaltenen Text anzuzeigen.</string>
     <string name="ForkReadGhost">Gelesen (Geist)</string>
     <string name="ForkViewEdits">Bearbeitungen anzeigen</string>
     <string name="ForkEditHistory">Bearbeitungsverlauf</string>
