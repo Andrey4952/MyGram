@@ -1095,8 +1095,8 @@
     <string name="ForkKeepDeletedDesc">Voorkomt verwijdering van berichten door andere gebruikers.</string>
     <string name="ForkKeepDeletedBots">Verwijderde berichten in bots behouden</string>
     <string name="ForkKeepDeletedBotsDesc">Voorkomt verwijdering van berichten in bots.</string>
-    <string name="ForkShowKeptDeleted">Bewaarde verwijderde berichten tonen</string>
-    <string name="ForkShowKeptDeletedDesc">Toont een visuele markering op verwijderde berichten.</string>
+    <string name="ForkShowKeptDeleted">Prullenbakpictogram weergeven</string>
+    <string name="ForkShowKeptDeletedDesc">Vervangt verwijderde berichten door een prullenbakpictogram. Schakel uit om het pictogram te verbergen en alleen de bewaarde tekst te tonen.</string>
     <string name="ForkReadGhost">Lezen (spook)</string>
     <string name="ForkViewEdits">Bewerkingen bekijken</string>
     <string name="ForkEditHistory">Bewerkingsgeschiedenis</string>

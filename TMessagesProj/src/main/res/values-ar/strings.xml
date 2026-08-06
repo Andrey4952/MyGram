@@ -1254,8 +1254,8 @@
     <string name="ForkKeepDeletedDesc">يمنع حذف الرسائل من قبل المستخدمين الآخرين.</string>
     <string name="ForkKeepDeletedBots">الاحتفاظ بالرسائل المحذوفة في البوتات</string>
     <string name="ForkKeepDeletedBotsDesc">يمنع حذف الرسائل في البوتات.</string>
-    <string name="ForkShowKeptDeleted">إظهار الرسائل المحذوفة المحتفظ بها</string>
-    <string name="ForkShowKeptDeletedDesc">يعرض تمييزاً مرئياً على الرسائل المحذوفة.</string>
+    <string name="ForkShowKeptDeleted">إظهار أيقونة سلة المهملات</string>
+    <string name="ForkShowKeptDeletedDesc">يستبدل الرسائل المحذوفة بأيقونة سلة المهملات. أطفئها لإخفاء الأيقونة وإظهار النص المحفوظ فقط.</string>
     <string name="ForkReadGhost">قراءة (شبح)</string>
     <string name="ForkViewEdits">عرض التعديلات</string>
     <string name="ForkEditHistory">سجل التعديلات</string>

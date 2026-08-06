@@ -274,8 +274,8 @@
     <string name="ForkKeepDeletedDesc">Запрещает удаление сообщений другими пользователями.</string>
     <string name="ForkKeepDeletedBots">Сохранять удалённые сообщения в ботах</string>
     <string name="ForkKeepDeletedBotsDesc">Запрещает удаление сообщений в ботах.</string>
-    <string name="ForkShowKeptDeleted">Показывать сохранённые удалённые сообщения</string>
-    <string name="ForkShowKeptDeletedDesc">Отображает визуальную подсветку для удалённых сообщений.</string>
+    <string name="ForkShowKeptDeleted">Показывать значок корзины</string>
+    <string name="ForkShowKeptDeletedDesc">Заменяет удалённые сообщения иконкой корзины. Выключите, чтобы скрыть иконку и оставить только сохранённый текст.</string>
     <string name="ForkReadGhost">Прочитать (призрак)</string>
     <string name="ForkViewEdits">Показать правки</string>
     <string name="ForkEditHistory">История правок</string>
