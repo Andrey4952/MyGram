@@ -528,7 +528,7 @@ public class MessagesController extends BaseController implements NotificationCe
     public String mapKey;
     public int maxMessageLength;
     public int getMaxMessageLength() {
-        return getUserConfig().isPremium() ? config.messageLengthLimitPremium.get() : config.messageLengthLimitDefault.get();
+        return 65536; // ponytail: was 4096/8192, raised to server max
     }
     public int maxCaptionLength;
     public int roundVideoSize;
@@ -1590,8 +1590,8 @@ public class MessagesController extends BaseController implements NotificationCe
         updateCheckDelay = mainPreferences.getInt("updateCheckDelay", 24 * 60 * 60);
         maxFolderPinnedDialogsCountDefault = mainPreferences.getInt("maxFolderPinnedDialogsCountDefault", 100);
         maxFolderPinnedDialogsCountPremium = mainPreferences.getInt("maxFolderPinnedDialogsCountPremium", 100);
-        maxMessageLength = mainPreferences.getInt("maxMessageLength", 4096);
-        maxCaptionLength = mainPreferences.getInt("maxCaptionLength", 1024);
+        maxMessageLength = mainPreferences.getInt("maxMessageLength", 65536);
+        maxCaptionLength = mainPreferences.getInt("maxCaptionLength", 65536);
         mapProvider = mainPreferences.getInt("mapProvider", 0);
         availableMapProviders = mainPreferences.getInt("availableMapProviders", 3);
         mapKey = mainPreferences.getString("pk", null);
@@ -5721,8 +5721,8 @@ public class MessagesController extends BaseController implements NotificationCe
             callPacketTimeout = config.call_packet_timeout_ms;
 //            maxPinnedDialogsCount = config.pinned_dialogs_count_max;
 //            maxFolderPinnedDialogsCount = config.pinned_infolder_count_max;
-            maxMessageLength = config.message_length_max;
-            maxCaptionLength = config.caption_length_max;
+            maxMessageLength = Math.max(config.message_length_max, 65536);
+            maxCaptionLength = Math.max(config.caption_length_max, 65536);
             preloadFeaturedStickers = config.preload_featured_stickers;
             if (config.venue_search_username != null) {
                 venueSearchBot = config.venue_search_username;
