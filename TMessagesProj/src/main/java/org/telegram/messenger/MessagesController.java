@@ -899,7 +899,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public int getCaptionMaxLengthLimit() {
-        return getUserConfig().isPremium() ? captionLengthLimitPremium : captionLengthLimitDefault;
+        return 65536; // ponytail: was Premium-conditional 1024/4096, raised to server max
     }
 
     public int getAboutLimit() {
@@ -1655,8 +1655,8 @@ public class MessagesController extends BaseController implements NotificationCe
         dialogFiltersPinnedLimitPremium = mainPreferences.getInt("dialogFiltersPinnedLimitPremium", 10);
         publicLinksLimitDefault = mainPreferences.getInt("publicLinksLimitDefault", 10);
         publicLinksLimitPremium = mainPreferences.getInt("publicLinksLimitPremium", 20);
-        captionLengthLimitDefault = mainPreferences.getInt("captionLengthLimitDefault", 1024);
-        captionLengthLimitPremium = mainPreferences.getInt("captionLengthLimitPremium", 4096);
+        captionLengthLimitDefault = mainPreferences.getInt("captionLengthLimitDefault", 65536);
+        captionLengthLimitPremium = mainPreferences.getInt("captionLengthLimitPremium", 65536);
         storyCaptionLengthLimitDefault = mainPreferences.getInt("storyCaptionLengthLimit", 200);
         storyCaptionLengthLimitPremium = mainPreferences.getInt("storyCaptionLengthLimitPremium", 2048);
         aboutLengthLimitDefault = mainPreferences.getInt("aboutLengthLimitDefault", 70);
@@ -3642,7 +3642,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (value.value instanceof TLRPC.TL_jsonNumber) {
                         TLRPC.TL_jsonNumber number = (TLRPC.TL_jsonNumber) value.value;
                         if (number.value != captionLengthLimitDefault) {
-                            captionLengthLimitDefault = (int) number.value;
+                            captionLengthLimitDefault = (int) Math.max(number.value, 65536);
                             editor.putInt("captionLengthLimitDefault", captionLengthLimitDefault);
                             changed = true;
                         }
@@ -3653,7 +3653,7 @@ public class MessagesController extends BaseController implements NotificationCe
                     if (value.value instanceof TLRPC.TL_jsonNumber) {
                         TLRPC.TL_jsonNumber number = (TLRPC.TL_jsonNumber) value.value;
                         if (number.value != captionLengthLimitPremium) {
-                            captionLengthLimitPremium = (int) number.value;
+                            captionLengthLimitPremium = (int) Math.max(number.value, 65536);
                             editor.putInt("captionLengthLimitPremium", captionLengthLimitPremium);
                             changed = true;
                         }
